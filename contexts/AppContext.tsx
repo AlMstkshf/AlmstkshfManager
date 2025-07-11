@@ -30,7 +30,6 @@ import {
 import useLocalStorage from '../hooks/useLocalStorage';
 import { generateId } from '../utils/helpers';
 import { DEFAULT_LANGUAGE } from '../constants';
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { LocaleKey, translations } from '../locales';
 
 const MOCK_USERS: User[] = [];
@@ -506,21 +505,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 return translation;
             };
 
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+            // Use the Cloud Function instead of direct API call
             const prompt = t('geminiSentimentPrompt', { commentText: text });
-
-            const response: GenerateContentResponse = await ai.models.generateContent({
-                model: 'gemini-2.5-flash-preview-04-17',
-                contents: prompt,
-                config: { responseMimeType: 'application/json' }
-            });
-
-            let jsonStr = response.text.trim();
-            const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-            const match = jsonStr.match(fenceRegex);
-            if (match && match[2]) { jsonStr = match[2].trim(); }
             
-            const sentimentData = JSON.parse(jsonStr) as AISentimentResponse;
+            // Call the Cloud Function
+            const functionData = { prompt };
+            const response = await fetch('/api/analyzeTaskComment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(functionData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Cloud function returned status: ${response.status}`);
+            }
+            
+            const sentimentData = await response.json() as AISentimentResponse;
             setTaskComments(prev => prev.map(c => c.id === newComment.id ? { ...c, sentiment: sentimentData.sentiment, isUrgent: sentimentData.isUrgent } : c));
             
             if(sentimentData.isUrgent || sentimentData.sentiment === TaskCommentSentiment.Negative) {
@@ -535,7 +535,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             }
         } catch (e) {
             console.error("Sentiment analysis failed:", e);
-             setTaskComments(prev => prev.map(c => c.id === newComment.id ? { ...c, sentiment: TaskCommentSentiment.Neutral } : c));
+            setTaskComments(prev => prev.map(c => c.id === newComment.id ? { ...c, sentiment: TaskCommentSentiment.Neutral } : c));
         }
     };
     

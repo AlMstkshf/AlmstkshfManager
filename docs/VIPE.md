@@ -1,5 +1,40 @@
 # VIPE Coding Document
 
+## Task Comment Sentiment Analysis Implementation
+
+### Overview
+The Task Comment Sentiment Analysis feature analyzes the sentiment of comments added to tasks and flags urgent or negative comments for attention. This document describes the implementation of this feature.
+
+### Implementation Details
+
+1. **Comment Creation Process**:
+   - When a user adds a comment to a task, it is initially created with `TaskCommentSentiment.Unknown`
+   - The comment is sent to the Cloud Function `analyzeTaskComment` for sentiment analysis
+   - The comment is updated with the sentiment analysis results (Positive, Negative, or Neutral) and urgency flag
+
+2. **Security Improvements**:
+   - Previously, the application was calling the Google Gemini API directly from the client-side code
+   - This implementation has been updated to use a secure Cloud Function instead
+   - This prevents API key exposure and follows the application's architecture pattern
+
+3. **Components**:
+   - `AppContext.tsx`: Contains the `addTaskComment` function that creates comments and calls the sentiment analysis
+   - `TaskComments.tsx`: Displays comments with appropriate sentiment icons and loading states
+   - `functions/src/index.ts`: Contains the `analyzeTaskComment` Cloud Function
+   - `locales.ts`: Contains the prompt template for sentiment analysis
+
+4. **Flow**:
+   - User adds a comment in the UI
+   - Comment is saved with Unknown sentiment
+   - Cloud Function is called with the formatted prompt
+   - Response is parsed and comment is updated with sentiment and urgency
+   - If comment is negative or urgent, a notification is created
+
+### Future Improvements
+- Update other AI functions (generateProjectInsights, generateMeetingAgenda, generateProjectIdeas) to use Cloud Functions instead of direct API calls
+- Add more sophisticated sentiment analysis with additional categories
+- Implement sentiment trend analysis across projects
+
 ## Almstkshf Manager Project
 
 ### Vision
