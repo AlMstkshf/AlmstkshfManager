@@ -2,10 +2,12 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Task, TaskStatus, TaskPriority, User, AIQuickTaskSuggestion, Project } from '../../types';
 import { useAppContext } from '../../contexts/AppContext';
-import Input from '../ui/Input';
-import Textarea from '../ui/Textarea';
-import Select from '../ui/Select';
-import Button from '../ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Button } from '@/components/ui/Button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { Calendar } from '@/components/ui/Calendar';
 import { useTranslations } from '../../hooks/useTranslations';
 import { LocaleKey } from '../../locales';
 

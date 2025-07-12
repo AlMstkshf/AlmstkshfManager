@@ -5,14 +5,14 @@ import {
   AIInsightsResponse, ProjectInsightItem, TourStep, ProjectIdea, SavedProjectIdea,
   ActivityLog, ActivityActionType, Permission, TEAM_MEMBER_PERMISSIONS, ADMIN_PERMISSIONS,
   PROJECT_MANAGER_PERMISSIONS, MeetingAgenda
-} from '../types';
+} from '@/types';
 import { 
     auth, db, signUpUser as signUpUserFunction, completeInvitedUserSetup as completeInvitedUserSetupFunction, 
     deleteUserByAdmin, analyzeTaskComment as analyzeTaskCommentFunction,
     generateProjectIdeas as generateProjectIdeasFunction,
     generateProjectInsights as generateProjectInsightsFunction,
     generateMeetingAgenda as generateMeetingAgendaFunction
-} from '../firebase';
+} from '@/firebase';
 import { 
     onAuthStateChanged, 
     signInWithEmailAndPassword, 
@@ -22,8 +22,9 @@ import {
 import { 
     collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, writeBatch, getDocs, serverTimestamp, orderBy, getDoc 
 } from 'firebase/firestore';
-import { DEFAULT_LANGUAGE } from '../constants';
-import { LocaleKey, translations } from '../locales';
+import { DEFAULT_LANGUAGE } from '@/constants';
+import { translations } from '@/locales';
+import type { LocaleKey } from '@/types';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 // Helper to map backend role to frontend permissions
@@ -111,6 +112,8 @@ interface AppContextType {
 
   // Language & Other
   setLanguage: (language: Language) => void;
+  logActivity: (actionType: ActivityActionType, data: { details?: string, targetEntityType?: 'project' | 'task' | 'user' | 'auth' | 'comment' | 'organization', targetEntityId?: string, targetEntityName?: string }) => void;
+
   canCurrentUserManageUsers: () => boolean;
   isCurrentUserAdmin: () => boolean;
   canCurrentUserEditTask: (task: Task, project?: Project | null) => boolean;
@@ -208,14 +211,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const q = query(collection(db, collectionName), where('organizationId', '==', orgId));
             const unsub = onSnapshot(q, (snapshot) => {
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // @ts-ignore
-                if(collectionName === 'projects') setProjects(data);
-                if(collectionName === 'tasks') setTasks(data);
-                if(collectionName === 'users') setUsers(data);
-                if(collectionName === 'savedIdeas') setSavedIdeas(data);
-                if(collectionName === 'activityLogs') setActivityLogs(data.sort((a,b) => b.timestamp - a.timestamp));
-                if(collectionName === 'notifications') setNotifications(data.sort((a,b) => b.timestamp - a.timestamp));
-                if(collectionName === 'taskComments') setTaskComments(data);
+                if(collectionName === 'projects') setProjects(data as Project[]);
+                if(collectionName === 'tasks') setTasks(data as Task[]);
+                if(collectionName === 'users') setUsers(data as User[]);
+                if(collectionName === 'savedIdeas') setSavedIdeas(data as ProjectIdea[]);
+                if(collectionName === 'activityLogs') setActivityLogs((data as ActivityLog[]).sort((a,b) => (b.timestamp as any)?.seconds - (a.timestamp as any)?.seconds));
+                if(collectionName === 'notifications') setNotifications((data as Notification[]).sort((a,b) => (b.timestamp as any)?.seconds - (a.timestamp as any)?.seconds));
+                if(collectionName === 'taskComments') setTaskComments(data as TaskComment[]);
             });
             unsubs.push(unsub);
         });
@@ -324,6 +326,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     };
 
+    const logActivity = useCallback((actionType: ActivityActionType, data: { details?: string, targetEntityType?: 'project' | 'task' | 'user' | 'auth' | 'comment' | 'organization', targetEntityId?: string, targetEntityName?: string }) => {
+        if (!currentUser) return;
+        addActivityLog(actionType, { ...data, userId: currentUser.id, userName: currentUser.name });
+    }, [currentUser]);
+
     const addActivityLog = async (actionType: ActivityActionType, data: { userId: string, userName?: string, details?: string, targetEntityType?: 'project' | 'task' | 'user' | 'auth' | 'comment' | 'organization', targetEntityId?: string, targetEntityName?: string }) => {
         if (!currentUser) return;
         const newLog = {
@@ -352,7 +359,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             messageKey,
             messageParams,
             read: false,
-            timestamp: Date.now(),
+            timestamp: serverTimestamp(),
             link,
             organizationId: currentUser.organizationId,
             userId: currentUser.id,
@@ -427,7 +434,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             projectId,
             userId: currentUser.id,
             text,
-            timestamp: Date.now(),
+            timestamp: serverTimestamp(),
             sentiment: TaskCommentSentiment.Unknown,
             isUrgent: false,
             organizationId: currentUser.organizationId,
@@ -549,7 +556,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             addProject, updateProject, deleteProject, archiveProject, addTask, updateTask, deleteTask, addTodo, updateTodo, deleteTodo, updateUser, deleteUser, updateOrganization, addTaskComment, saveProjectIdea, removeSavedIdea, isIdeaSaved,
             addNotification, markNotificationAsRead, clearNotifications,
             isTourOpen, tourSteps, currentTourStepIndex, startTour, finishTour, nextTourStep, prevTourStep,
-            setLanguage, canCurrentUserManageUsers, isCurrentUserAdmin, canCurrentUserEditTask, canCurrentUserDeleteTask, generateProjectInsights, generateMeetingAgenda, generateProjectIdeas
+            setLanguage, logActivity, canCurrentUserManageUsers, isCurrentUserAdmin, canCurrentUserEditTask, canCurrentUserDeleteTask, generateProjectInsights, generateMeetingAgenda, generateProjectIdeas
         }}>
             {children}
         </AppContext.Provider>

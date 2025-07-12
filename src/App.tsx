@@ -2,22 +2,22 @@
 
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
-import Layout from './components/Layout';
-import DashboardPage from './pages/DashboardPage';
-import ProjectDetailPage from './pages/ProjectDetailPage';
-import MyTasksPage from './pages/MyTasksPage';
-import ProjectIdeasPage from './pages/ProjectIdeasPage';
-import UserManagementPage from './pages/UserManagementPage';
-import LoginPage from './pages/LoginPage'; 
-import RegistrationPage from './pages/RegistrationPage';
-import UserProfilePage from './pages/UserProfilePage';
-import GuidelinesPage from './pages/GuidelinesPage'; 
-import ProtectedRoute from './components/auth/ProtectedRoute'; 
-import { useAppContext } from './contexts/AppContext';
-import TourModal from './components/tour/TourModal'; 
-import SetPasswordPage from './pages/SetPasswordPage'; // For invite flow
-import RequestPasswordResetPage from './pages/RequestPasswordResetPage'; // New for password reset
-import ResetPasswordPage from './pages/ResetPasswordPage'; // New for password reset
+import Layout from '@/components/Layout';
+import DashboardPage from '@/pages/DashboardPage';
+import ProjectDetailPage from '@/pages/ProjectDetailPage';
+import MyTasksPage from '@/pages/MyTasksPage';
+import ProjectIdeasPage from '@/pages/ProjectIdeasPage';
+import UserManagementPage from '@/pages/UserManagementPage';
+import LoginPage from '@/pages/LoginPage';
+import RegistrationPage from '@/pages/RegistrationPage';
+import UserProfilePage from '@/pages/UserProfilePage';
+import GuidelinesPage from '@/pages/GuidelinesPage';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { useAppContext } from '@/contexts/AppContext';
+import TourModal from '@/components/tour/TourModal';
+import SetPasswordPage from '@/pages/SetPasswordPage'; // For invite flow
+import RequestPasswordResetPage from '@/pages/RequestPasswordResetPage'; // New for password reset
+import ResetPasswordPage from '@/pages/ResetPasswordPage'; // New for password reset
 
 const App: React.FC = () => {
   const { 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAppContext } from '../../contexts/AppContext';
+import { useAppContext } from '@/contexts/AppContext';
 
 const ProtectedRoute: React.FC = () => {
   const { currentUser, loading } = useAppContext();

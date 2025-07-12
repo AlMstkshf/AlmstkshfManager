@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
-import {GoogleGenAI, GenerateContentResponse} from "@google/genai";
+import {GoogleGenAI} from "@google/genai";
 
 admin.initializeApp();
 const db = admin.firestore();

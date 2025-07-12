@@ -1,18 +1,20 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
-import { useAppContext } from '../contexts/AppContext';
-import ProjectList from '../components/projects/ProjectList';
-import ProjectForm from '../components/projects/ProjectForm';
-import Modal from '../components/ui/Modal';
-import Button from '../components/ui/Button';
-import DashboardAnalytics from '../components/dashboard/DashboardAnalytics';
-import UrgentTasksSummary, { UrgentTaskView } from '../components/dashboard/UrgentTasksSummary';
-import AIInsightsPanel from '../components/dashboard/AIInsightsPanel'; 
-import { useTranslations } from '../hooks/useTranslations';
-import { TaskPriority, TaskStatus, MeetingAgenda, User, Project, Task, ProjectInsightItem, AIInsightsResponse, Permission } from '../types';
-import { isDueWithinHours, formatDate } from '../../utils/helpers'; 
-import { generateMeetingAgenda as generateMeetingAgendaFunction } from '../../firebase';
+import { useAppContext } from '@/contexts/AppContext';
+import ProjectForm from '@/components/projects/ProjectForm';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
+import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
+import UrgentTasksSummary from '@/components/dashboard/UrgentTasksSummary';
+import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
+import ProjectList from '@/components/projects/ProjectList';
+import TaskList from '@/components/tasks/TaskList';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useTranslations } from '@/hooks/useTranslations';
+import { TaskPriority, TaskStatus, MeetingAgenda, User, Project, Task, ProjectInsightItem, AIInsightsResponse, Permission } from '@/types';
+import { isDueWithinHours, formatDate } from '@/utils/helpers'; 
+import { generateMeetingAgenda as generateMeetingAgendaFunction } from '@/firebase';
 
 interface IconProps {
   className?: string;

@@ -1,17 +1,16 @@
 
 import React, { useState, useMemo } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
-import { useTranslations } from '../../hooks/useTranslations';
-import Button from '../components/ui/Button';
-import Modal from '../components/ui/Modal';
-import EditProfileForm from '../components/users/EditProfileForm';
-import ProjectList from '../components/projects/ProjectList';
-import TaskList from '../components/tasks/TaskList';
-import { Task, Project, TaskStatus, User, ActivityActionType, Permission } from '../../types';
+import { useAppContext } from '@/contexts/AppContext';
+import { useTranslations } from '@/hooks/useTranslations';
+import { Button } from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import EditProfileForm from '@/components/users/EditProfileForm';
+import ProjectList from '@/components/projects/ProjectList';
+import TaskList from '@/components/tasks/TaskList';
+import { Task, Project, TaskStatus, User, ActivityActionType, Permission } from '@/types';
 import { useNavigate } from 'react-router-dom';
-import Card from '../components/ui/Card';
-import { formatRelativeTime } from '../../utils/helpers';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { formatRelativeTime } from '@/utils/helpers';
 
 const UserEditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>;
 const ProjectIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>;

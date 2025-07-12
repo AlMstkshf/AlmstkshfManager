@@ -1,11 +1,12 @@
 
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppContext } from '../contexts/AppContext';
-import { useTranslations } from '../../hooks/useTranslations';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import { User } from '../../types'; 
+import { useAppContext } from '@/contexts/AppContext';
+import { useTranslations } from '@/hooks/useTranslations';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { User } from '@/types'; 
 
 type RegistrationMode = 'join' | 'create';
 

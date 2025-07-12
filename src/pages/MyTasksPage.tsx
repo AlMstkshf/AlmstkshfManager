@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
-import { Task, Todo, TaskStatus, Project } from '../../types';
-import TaskList from '../components/tasks/TaskList';
-import TodoList from '../components/todos/TodoList';
-import TodoForm from '../components/todos/TodoForm';
-import Modal from '../components/ui/Modal';
-import TaskForm from '../components/tasks/TaskForm';
-import { useTranslations } from '../../hooks/useTranslations';
-import Button from '../components/ui/Button'; 
+import { useAppContext } from '@/contexts/AppContext';
+import { Task, Todo, TaskStatus, Project } from '@/types';
+import TaskList from '@/components/tasks/TaskList';
+import TodoList from '@/components/todos/TodoList';
+import TodoForm from '@/components/todos/TodoForm';
+import Modal from '@/components/ui/Modal';
+import TaskForm from '@/components/tasks/TaskForm';
+import { useTranslations } from '@/hooks/useTranslations';
+import { Button } from '@/components/ui/Button'; 
 import { useNavigate } from 'react-router-dom'; 
 
 const ArrowPathIcon: React.FC<{ className?: string }> = ({ className }) => (

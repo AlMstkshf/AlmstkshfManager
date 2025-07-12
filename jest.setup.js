@@ -1,7 +1,12 @@
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
-import '@testing-library/jest-dom';
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+global.ReadableStream = require('web-streams-polyfill').ReadableStream;
+
+require('@testing-library/jest-dom');
 
 // Mock the window.matchMedia function which is not implemented in JSDOM
 Object.defineProperty(window, 'matchMedia', {

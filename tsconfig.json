@@ -11,14 +11,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "esModuleInterop": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "./pages", "./components", "./types.ts", "./utils", "./hooks", "./contexts", "./constants", "./locales"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

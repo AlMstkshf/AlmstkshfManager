@@ -1,12 +1,13 @@
 
 import React, { useState, FormEvent, useEffect } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
-import { useTranslations } from '../../hooks/useTranslations';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import Checkbox from '../ui/Checkbox';
-import { User, UserPermissions, Permission, TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from '../../types';
-import { adminInviteUser } from '../../firebase';
+import { useAppContext } from '@/contexts/AppContext';
+import { useTranslations } from '@/hooks/useTranslations';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Checkbox from '@/components/ui/Checkbox';
+import { User, UserPermissions, Permission, TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from '@/types';
+import { adminInviteUser } from '@/firebase';
 
 
 interface UserFormProps {
@@ -54,7 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
   };
   
   const handlePermissionChange = (permission: Permission, isChecked: boolean) => {
-    setPermissions(prev => ({
+    setPermissions((prev: UserPermissions) => ({
       ...prev,
       [permission]: isChecked
     }));
@@ -124,7 +125,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
           label={t('userNameLabel')}
           id="userName"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
           error={error.includes(t('userNameLabel')) ? error : undefined}
           required
         />
@@ -133,7 +134,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
           id="userEmail"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           placeholder={t('userEmailPlaceholder')}
           error={error.includes(t('userEmailLabel')) || error.includes(t('emailInvalidError')) ? error : undefined}
           required
@@ -167,7 +168,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
                           id={p}
                           label={t(`permission_${p}` as any)}
                           checked={permissions[p]}
-                          onChange={(e) => handlePermissionChange(p, e.target.checked)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePermissionChange(p, e.target.checked)}
                           disabled={userToEdit?.id === currentUser?.id && p === Permission.MANAGE_ORGANIZATION}
                         />
                     ))}

@@ -1,10 +1,10 @@
 
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
-import { useAppContext } from '../contexts/AppContext';
-import { useTranslations } from '../../hooks/useTranslations';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
+import { useAppContext } from '@/contexts/AppContext';
+import { useTranslations } from '@/hooks/useTranslations';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 
 const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>

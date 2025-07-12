@@ -1,20 +1,21 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useAppContext } from '../../contexts/AppContext';
-import { Project, Task, TaskStatus, ProjectTimelineMilestone, AIQuickTaskSuggestion, User, TaskPriority, Permission } from '../../types';
-import TaskList from '../components/tasks/TaskList';
-import TaskForm from '../components/tasks/TaskForm';
-import Modal from '../components/ui/Modal';
-import Button from '../components/ui/Button';
-import Textarea from '../components/ui/Textarea'; // For Quick Add
-import { formatDate, getTaskStatusColor } from '../../utils/helpers';
-import { PROJECT_COLORS } from '../../constants';
-import ProjectForm from '../components/projects/ProjectForm';
-import { useTranslations } from '../../hooks/useTranslations';
+import { useAppContext } from '@/contexts/AppContext';
+import { Project, Task, TaskStatus, ProjectTimelineMilestone, AIQuickTaskSuggestion, User, TaskPriority, Permission } from '@/types';
+import TaskList from '@/components/tasks/TaskList';
+import TaskForm from '@/components/tasks/TaskForm';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import Modal from '@/components/ui/Modal';
+import Textarea from '@/components/ui/Textarea'; // For Quick Add
+import { formatDate, getTaskStatusColor } from '@/utils/helpers';
+import { PROJECT_COLORS } from '@/constants';
+import ProjectForm from '@/components/projects/ProjectForm';
+import { useTranslations } from '@/hooks/useTranslations';
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import TaskComments from '../components/tasks/TaskComments'; 
-import ProjectTimelineView from '../components/projects/ProjectTimelineView';
+import TaskComments from '@/components/tasks/TaskComments'; 
+import ProjectTimelineView from '@/components/projects/ProjectTimelineView';
 
 const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>;
 const BoltIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 me-1 rtl:me-0 rtl:ms-1"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>;

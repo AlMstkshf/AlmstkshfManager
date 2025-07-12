@@ -1,6 +1,6 @@
 import React from 'react';
-import Modal from '../ui/Modal';
-import Button from '../ui/Button';
+import { Button } from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
 import { useTranslations } from '../../hooks/useTranslations';
 import { TourStep } from '../../types';
 

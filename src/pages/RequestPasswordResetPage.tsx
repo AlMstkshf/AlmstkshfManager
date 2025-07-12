@@ -3,8 +3,9 @@ import React, { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../contexts/AppContext';
 import { useTranslations } from '../../hooks/useTranslations';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 
 const RequestPasswordResetPage: React.FC = () => {
   const { requestPasswordReset } = useAppContext();

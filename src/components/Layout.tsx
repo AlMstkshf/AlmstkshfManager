@@ -2,8 +2,8 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-import { useTranslations } from '../../hooks/useTranslations';
-import { Language } from '../../types';
+import { useTranslations } from '@/hooks/useTranslations';
+import { Language } from '@/types';
 
 interface LayoutProps {
   children: ReactNode;

@@ -2,8 +2,10 @@
 import React, { useState, FormEvent, useEffect, useRef } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { useTranslations } from '../../hooks/useTranslations';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { User } from '../../types';
 import { storage, auth, db } from '../../firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
