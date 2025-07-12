@@ -53,15 +53,12 @@ interface AppContextType {
   language: Language;
   
   // Auth
-  loginUser: (email: string, pass: string) => User | { error: LocaleKey };
-  logout: () => void;
-  registerAndCreateOrg: (userData: Omit<User, 'id' | 'organizationId' | 'status' | 'permissions'>, orgName: string, pass: string) => User | { error: LocaleKey };
-  registerWithInvite: (userData: Omit<User, 'id' | 'organizationId' | 'status' | 'permissions'>, inviteCode: string, pass: string) => User | { error: LocaleKey };
-  verifyInvitationToken: (token: string) => User | null;
-  setUserPasswordAndActivate: (userId: string, pass: string) => boolean;
+  loginUser: (email: string, pass: string) => Promise<{ success: boolean; error?: LocaleKey }>;
+  logout: () => Promise<void>;
+  registerAndCreateOrg: (userData: Omit<User, 'id' | 'organizationId' | 'status' | 'permissions'>, orgName: string, pass: string) => Promise<{ success: boolean; error?: LocaleKey }>;
+  registerWithInvite: (userData: Omit<User, 'id' | 'organizationId' | 'status' | 'permissions'>, inviteCode: string, pass: string) => Promise<{ success: boolean; error?: LocaleKey }>;
+  completeUserSetup: (token: string, pass: string, fullName: string) => Promise<{ success: boolean; error?: LocaleKey }>;
   requestPasswordReset: (email: string) => Promise<boolean>;
-  verifyPasswordResetToken: (token: string) => User | null;
-  resetUserPassword: (userId: string, pass: string) => boolean;
 
   // Data Getters
   getProjectById: (projectId: string) => Project | undefined;
@@ -76,34 +73,33 @@ interface AppContextType {
   getUserById: (userId: string) => User | undefined;
   
   // Data Mutators
-  addProject: (projectData: Omit<Project, 'id' | 'ownerId' | 'organizationId'>, fromIdea?: boolean) => void;
-  updateProject: (project: Project) => void;
-  deleteProject: (projectId: string) => void;
-  archiveProject: (projectId: string, archive: boolean) => void;
+  addProject: (projectData: Omit<Project, 'id' | 'ownerId' | 'organizationId'>, fromIdea?: boolean) => Promise<void>;
+  updateProject: (project: Project) => Promise<void>;
+  deleteProject: (projectId: string) => Promise<void>;
+  archiveProject: (projectId: string, archive: boolean) => Promise<void>;
 
-  addTask: (taskData: Omit<Task, 'id' | 'organizationId'>) => void;
-  updateTask: (task: Task) => void;
-  deleteTask: (taskId: string) => void;
+  addTask: (taskData: Omit<Task, 'id' | 'organizationId'>) => Promise<void>;
+  updateTask: (task: Task) => Promise<void>;
+  deleteTask: (taskId: string) => Promise<void>;
 
-  addTodo: (todoData: Omit<Todo, 'id' | 'userId' | 'organizationId'>) => void;
-  updateTodo: (todo: Todo) => void;
-  deleteTodo: (todoId: string) => void;
+  addTodo: (todoData: Omit<Todo, 'id' | 'userId' | 'organizationId'>) => Promise<void>;
+  updateTodo: (todo: Todo) => Promise<void>;
+  deleteTodo: (todoId: string) => Promise<void>;
 
-  addUser: (userData: Omit<User, 'id' | 'organizationId' | 'status'>) => boolean;
-  updateUser: (user: User) => boolean;
-  deleteUser: (userId: string) => void;
-  updateOrganization: (orgId: string, orgData: Partial<Organization>) => void;
+  updateUser: (user: User) => Promise<boolean>;
+  deleteUser: (userId: string) => Promise<void>;
+  updateOrganization: (orgId: string, orgData: Partial<Organization>) => Promise<void>;
   
   addTaskComment: (taskId: string, projectId: string, text: string) => Promise<void>;
 
-  saveProjectIdea: (idea: Omit<ProjectIdea, 'organizationId' | 'id'> & {id?:string}) => void;
-  removeSavedIdea: (ideaId: string) => void;
+  saveProjectIdea: (idea: Omit<ProjectIdea, 'organizationId' | 'id'> & {id?:string}) => Promise<void>;
+  removeSavedIdea: (ideaId: string) => Promise<void>;
   isIdeaSaved: (ideaId: string) => boolean;
 
   // Notifications
-  addNotification: (messageKey: LocaleKey, messageParams?: Record<string, string | number>, link?: string) => void;
-  markNotificationAsRead: (notificationId: string) => void;
-  clearNotifications: () => void;
+  addNotification: (messageKey: LocaleKey, messageParams?: Record<string, string | number>, link?: string) => Promise<void>;
+  markNotificationAsRead: (notificationId: string) => Promise<void>;
+  clearNotifications: () => Promise<void>;
 
   // Tour
   isTourOpen: boolean;
@@ -114,8 +110,9 @@ interface AppContextType {
   nextTourStep: () => void;
   prevTourStep: () => void;
 
-  // Language
+  // Language & Other
   setLanguage: (language: Language) => void;
+  logActivity: (actionType: ActivityActionType, data: { details?: string, targetEntityType?: 'project' | 'task' | 'user' | 'auth' | 'comment' | 'organization', targetEntityId?: string, targetEntityName?: string }) => void;
 
   // Permissions
   canCurrentUserManageUsers: () => boolean;
@@ -130,6 +127,14 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
+
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // This is a simplified context implementation. In a real app, you'd likely

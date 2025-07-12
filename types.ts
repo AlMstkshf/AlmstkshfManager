@@ -3,6 +3,13 @@ export interface User {
   name: string;
   email: string;
   permissions: UserPermissions;
+  organizationId: string;
+  status: UserStatus;
+  password?: string;
+  photoURL?: string;
+  invitationToken?: string;
+  passwordResetToken?: string;
+  passwordResetTokenExpiry?: number;
 }
 
 export interface UserPermissions {
@@ -107,6 +114,14 @@ export interface Project {
   isArchived?: boolean;
 }
 
+export type LocaleKey = string;
+
+export interface SavedProjectIdea extends ProjectIdea {
+  savedAt: number;
+  savedBy: string;
+  organizationId: string;
+}
+
 export interface ProjectIdea {
   id: string;
   title: string;
@@ -117,6 +132,13 @@ export interface ProjectIdea {
   potentialChallenges: string[];
   expectedOutcome: string;
   createdAt: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  inviteCode: string;
+  logoUrl: string;
 }
 
 export interface ProjectTimelineMilestone {
@@ -199,19 +221,32 @@ export interface TourStep {
 }
 
 // Activity log types
+export enum UserStatus {
+  Active = 'Active',
+  Invited = 'Invited',
+  Deactivated = 'Deactivated'
+}
+
 export enum ActivityActionType {
   ProjectCreated = 'PROJECT_CREATED',
   ProjectUpdated = 'PROJECT_UPDATED',
   ProjectDeleted = 'PROJECT_DELETED',
+  ProjectArchived = 'PROJECT_ARCHIVED',
+  ProjectUnarchived = 'PROJECT_UNARCHIVED',
   TaskCreated = 'TASK_CREATED',
   TaskUpdated = 'TASK_UPDATED',
   TaskDeleted = 'TASK_DELETED',
   TaskStatusChanged = 'TASK_STATUS_CHANGED',
   UserInvited = 'USER_INVITED',
-  UserJoined = 'USER_JOINED'
+  UserJoined = 'USER_JOINED',
+  UserLoggedIn = 'USER_LOGGED_IN',
+  UserLoggedOut = 'USER_LOGGED_OUT',
+  UserActivatedByInvite = 'USER_ACTIVATED_BY_INVITE',
+  UserPasswordResetRequested = 'USER_PASSWORD_RESET_REQUESTED',
+  UserPasswordResetCompleted = 'USER_PASSWORD_RESET_COMPLETED'
 }
 
-export interface ActivityLogEntry {
+export interface ActivityLog {
   id: string;
   action: ActivityActionType;
   userId: string;
@@ -227,12 +262,11 @@ export interface ActivityLogEntry {
 // Notification types
 export interface Notification {
   id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  messageKey: LocaleKey;
+  messageParams: Record<string, string | number>;
   read: boolean;
   timestamp: number;
+  link?: string;
   organizationId: string;
 }
 
