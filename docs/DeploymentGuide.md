@@ -85,7 +85,13 @@ npm run deploy:hosting
 
 ## Troubleshooting
 
-### Missing Environment Variables
+### Common Issues
+
+If you encounter deployment issues, please refer to the comprehensive [Troubleshooting Guide](./TroubleshootingGuide.md) for detailed solutions to common problems.
+
+### Quick Fixes
+
+#### Missing Environment Variables
 
 If you encounter errors related to missing environment variables:
 
@@ -93,20 +99,24 @@ If you encounter errors related to missing environment variables:
 2. Run the set-env script manually:
    ```
    cd functions
-   npm run set-env
+   node set-env.js
    ```
 3. Check the Firebase Functions logs for any errors:
    ```
    firebase functions:log
    ```
 
-### Deployment Failures
+#### Deployment Failures
 
 If deployment fails:
 
 1. Check the error messages in the console
-2. Verify that you have the correct permissions for the Firebase project
-3. Try deploying hosting and functions separately to isolate the issue
+2. Try deploying hosting and functions separately:
+   ```
+   npm run deploy:functions
+   npm run deploy:hosting
+   ```
+3. Refer to the [Troubleshooting Guide](./TroubleshootingGuide.md) for more detailed solutions
 
 ## Security Considerations
 

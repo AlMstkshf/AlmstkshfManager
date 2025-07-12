@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { 
   Project, 
   Task, 
@@ -7,14 +7,12 @@ import {
   User, 
   Organization, 
   TaskStatus, 
-  TaskPriority, 
   Language, 
   UserStatus, 
   TaskComment, 
   TaskCommentSentiment,
   AISentimentResponse,
   AIInsightsResponse, 
-  ProjectInsightItem,
   TourStep,
   ProjectIdea, 
   SavedProjectIdea,
@@ -23,8 +21,6 @@ import {
   Permission,
   TEAM_MEMBER_PERMISSIONS,
   ADMIN_PERMISSIONS,
-  PROJECT_MANAGER_PERMISSIONS,
-  UserPermissions,
   MeetingAgenda
 } from '../types';
 import useLocalStorage from '../hooks/useLocalStorage';
@@ -291,19 +287,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
 
         const logKey = `logDetails${actionType}` as LocaleKey;
-        const details = t(logKey, { targetName: data.targetEntityName, userName: data.userName, ...data });
+        const details = t(logKey, { targetName: data.targetEntityName || '', userName: data.userName || '', ...data });
 
+        // Create log object with base properties first
         const newLog: ActivityLog = {
             id: generateId(),
             timestamp: Date.now(),
-            userId: data.userId,
-            userName: data.userName || users.find(u=>u.id === data.userId)?.name,
             organizationId: currentUser.organizationId,
             actionType,
             details,
-            ...data
         };
-        setActivityLogs(prev => [newLog, ...prev].slice(0, 200)); // Keep last 200 logs
+        
+        // Add remaining properties, ensuring userId from data takes precedence
+        const logWithData = {
+            ...newLog,
+            ...data,
+            // Ensure userName is set even if not in data
+            userName: data.userName || users.find(u=>u.id === data.userId)?.name
+        };
+        setActivityLogs(prev => [logWithData, ...prev].slice(0, 200)); // Keep last 200 logs
     }, [currentUser, setActivityLogs, users, language]);
 
 
@@ -346,7 +348,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const clearNotifications = () => setNotifications(prev => prev.filter(n => n.organizationId !== currentUser?.organizationId));
 
     // --- DATA MUTATORS ---
-    const addProject = (projectData: Omit<Project, 'id' | 'ownerId' | 'organizationId'>, fromIdea = false) => {
+    const addProject = (projectData: Omit<Project, 'id' | 'ownerId' | 'organizationId'>) => {
         if (!currentUser) return;
         const newProject: Project = {
             id: generateId(),
@@ -527,8 +529,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 const task = tasks.find(t=>t.id === taskId);
                 const project = projects.find(p=>p.id === projectId);
                 addNotification('notificationUrgentComment', {
-                    taskName: task?.name,
-                    projectName: project?.name,
+                    taskName: task?.name || '',
+                    projectName: project?.name || '',
                     userName: currentUser.name,
                     commentTextSnippet: text.substring(0, 30)
                 }, `/project/${projectId}?openComments=${taskId}`);
@@ -581,7 +583,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const canCurrentUserDeleteTask = (task: Task, project?: Project | null) => {
         if (!currentUser) return false;
         if (currentUser.permissions[Permission.DELETE_ALL_TASKS]) return true;
-        if (project && project.ownerId === currentUser.id) return true;
+        
+        // Use the provided project or get it from the task's projectId
+        const taskProject = project || getProjectById(task.projectId);
+        if (taskProject && taskProject.ownerId === currentUser.id) return true;
+        
         return false;
     };
 

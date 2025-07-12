@@ -90,6 +90,18 @@ Almstkshf Manager is a comprehensive project management application designed to 
    npm run dev
    ```
 
+## Deployment
+
+To deploy the application to Firebase:
+
+```
+npm run deploy
+```
+
+For detailed deployment instructions, see the [Deployment Guide](./docs/DeploymentGuide.md).
+
+If you encounter any issues during deployment, refer to the [Troubleshooting Guide](./docs/TroubleshootingGuide.md).
+
 ## Testing
 
 ### Unit Tests
