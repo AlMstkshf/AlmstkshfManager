@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '@/contexts/AppContext';
 import ProjectForm from '@/components/projects/ProjectForm';
 import Modal from '@/components/ui/Modal';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
 import UrgentTasksSummary from '@/components/dashboard/UrgentTasksSummary';
 import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
@@ -15,19 +15,12 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { TaskPriority, TaskStatus, MeetingAgenda, User, Project, Task, ProjectInsightItem, AIInsightsResponse, Permission } from '@/types';
 import { isDueWithinHours, formatDate } from '@/utils/helpers'; 
 import { generateMeetingAgenda as generateMeetingAgendaFunction } from '@/firebase';
+import { PlusIcon, ArchiveBoxIcon, EyeIcon, FolderOpenIcon, ClipboardListIcon, LightBulbIcon, UserGroupIconDashboard } from '@/components/ui/Icons';
 
-interface IconProps {
-  className?: string;
+interface UrgentTaskView extends Task {
+  projectName: string;
+  projectOwnerName: string;
 }
-
-const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>;
-const ArchiveBoxIcon: React.FC<IconProps> = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125V6.375c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v.001c0 .621.504 1.125 1.125 1.125z" /></svg>;
-const EyeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.432 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
-const FolderOpenIcon: React.FC<{ className?: string }> = ({ className = "h-12 w-12 mx-auto text-gray-400" }) => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>;
-const ClipboardListIcon: React.FC<IconProps> = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
-const LightBulbIcon: React.FC<IconProps> = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}><path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.355A12.053 12.053 0 0112 21.75c-2.672 0-5.182-.877-7.142-2.472M12 3V1.5M12 3c-.312 0-.624.016-.932.047M12 3c.312 0 .624.016.932.047M12 6.75A2.25 2.25 0 009.75 9H7.5a5.25 5.25 0 004.5 5.25m0-5.25A2.25 2.25 0 0114.25 9h2.25a5.25 5.25 0 01-4.5 5.25m0-5.25V6.75M5.106 5.106c.307-.308.633-.578.977-.812M18.894 5.106c-.307-.308-.633-.578-.977-.812M5.106 18.894c.308.307.578.633.812.977M18.894 18.894c-.308.307-.578.633-.812.977" /></svg>;
-const UserGroupIconDashboard: React.FC<IconProps> = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-3.741-5.853M12 12.75H3m9 0h9M12 12.75a3 3 0 11-6 0 3 3 0 016 0zm0 0V3m0 9.75a3 3 0 000 6A3 3 0 0012 12.75zm0 0h-.008v.008H12v-.008zm0 0H12.008v.008H12v-.008z" /></svg>;
-
 
 const StatCardLink: React.FC<{ title: string; description: string; linkTo: string; icon: React.ReactNode; buttonText: string; colorClass: string }> = ({ title, description, linkTo, icon, buttonText, colorClass }) => {
   const navigate = useNavigate();
@@ -45,8 +38,8 @@ const StatCardLink: React.FC<{ title: string; description: string; linkTo: strin
         </div>
       </div>
       <div className="mt-4 text-right rtl:text-left">
-        <Button onClick={() => navigate(linkTo)} variant="outline" size="sm" className="border-transparent hover:border-primary">
-          {buttonText} &rarr;
+        <Button onClick={() => navigate(linkTo)} variant="outline" size="sm">
+          {buttonText} 
         </Button>
       </div>
     </div>
@@ -99,32 +92,35 @@ const DashboardPage: React.FC = () => {
   }, [tasks, projects, activeProjects, currentUser]);
 
 
-  const urgentHighPriorityTasksGrouped = useMemo(() => {
-    const urgentTasks: UrgentTaskView[] = [];
+  const urgentHighPriorityTasksGrouped: Record<string, UrgentTaskView[]> = useMemo(() => {
     const isElevatedUser = currentUser?.permissions[Permission.MANAGE_USERS] || currentUser?.permissions[Permission.CREATE_PROJECTS];
     const projectsToCheck = isElevatedUser 
                             ? projects.filter(p => !p.isArchived)
                             : activeProjects; 
 
-    projectsToCheck.forEach(project => {
-        tasks.filter(task => task.projectId === project.id).forEach(task => {
-            if (
-            task.priority === TaskPriority.High &&
-            task.status !== TaskStatus.Done &&
-            isDueWithinHours(task.dueDate, 48) 
-            ) {
-            const owner = users.find(u => u.id === project.ownerId); 
-            if (owner) {
-                urgentTasks.push({
-                ...task,
-                projectName: project.name,
-                projectOwnerName: owner.name,
-                });
-            }
-            }
-        });
-    });
-    
+    const urgentTasks = tasks
+      .map(task => {
+        const project = projectsToCheck.find(p => p.id === task.projectId);
+        if (!project) return null;
+
+        if (
+          task.priority === TaskPriority.High &&
+          task.status !== TaskStatus.Done &&
+          isDueWithinHours(task.dueDate, 48)
+        ) {
+          const owner = users.find(u => u.id === project.ownerId);
+          if (owner) {
+            return {
+              ...task,
+              projectName: project.name,
+              projectOwnerName: owner.name,
+            };
+          }
+        }
+        return null;
+      })
+      .filter((task): task is UrgentTaskView => task !== null);
+
     return urgentTasks.reduce((acc, task) => {
       const ownerName = task.projectOwnerName;
       if (!acc[ownerName]) {
