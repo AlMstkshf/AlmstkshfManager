@@ -69,7 +69,7 @@ Almstkshf Manager is a comprehensive project management application designed to 
    npm install
    ```
 
-3. Create a `.env.local` file in the root directory with your Firebase configuration:
+3. Create a `.env.local` file in the root directory with your Firebase configuration (copy from `.env.example`):
    ```
    VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -80,7 +80,12 @@ Almstkshf Manager is a comprehensive project management application designed to 
    GEMINI_API_KEY=your_gemini_api_key
    ```
 
-4. Start the development server
+4. Create a `.env` file in the `functions` directory with your Gemini API key (copy from `functions/.env.example`):
+   ```
+   API_KEY=your_gemini_api_key
+   ```
+
+5. Start the development server
    ```
    npm run dev
    ```

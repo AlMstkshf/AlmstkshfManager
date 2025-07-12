@@ -30,10 +30,38 @@ The Task Comment Sentiment Analysis feature analyzes the sentiment of comments a
    - Response is parsed and comment is updated with sentiment and urgency
    - If comment is negative or urgent, a notification is created
 
+### AI Functions Security Improvements
+
+1. **Refactored AI Functions**:
+   - All AI functions have been updated to use secure Cloud Functions instead of direct API calls:
+     - `addTaskComment`: Uses Cloud Function for sentiment analysis
+     - `generateProjectInsights`: Uses Cloud Function for project analytics
+     - `generateMeetingAgenda`: Uses Cloud Function for agenda generation
+     - `generateProjectIdeas`: Uses Cloud Function for idea generation
+
+2. **Security Benefits**:
+   - API keys are now stored securely on the server side only
+   - All AI requests are authenticated through Firebase
+   - Consistent error handling across all AI features
+   - Reduced client-side code complexity
+
+3. **Implementation Pattern**:
+   - Client prepares necessary data and creates a prompt
+   - Cloud Function is called with the prompt via fetch API
+
+4. **Environment Variables Security**:
+   - Gemini API key is stored securely in Firebase Functions config
+   - Local development uses `.env` files which are excluded from version control
+   - Deployment process automatically sets environment variables in Firebase
+   - Multiple layers of fallbacks to ensure API keys are always available
+   - Clear error messages when API keys are missing
+   - Response is processed and returned to the client
+   - Error handling is consistent across all functions
+
 ### Future Improvements
-- Update other AI functions (generateProjectInsights, generateMeetingAgenda, generateProjectIdeas) to use Cloud Functions instead of direct API calls
 - Add more sophisticated sentiment analysis with additional categories
 - Implement sentiment trend analysis across projects
+- Add rate limiting and caching to Cloud Functions
 
 ## Almstkshf Manager Project
 

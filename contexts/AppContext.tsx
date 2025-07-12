@@ -628,54 +628,70 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
         const prompt = t('geminiInsightsPrompt', { projectsJson, tasksJson, usersJson });
         
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
-        const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-preview-04-17',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' }
-        });
-
-        let jsonStr = response.text.trim();
-        const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-        const match = jsonStr.match(fenceRegex);
-        if (match && match[2]) { jsonStr = match[2].trim(); }
-
-        return JSON.parse(jsonStr) as AIInsightsResponse;
+        try {
+            // Call the Cloud Function
+            const functionData = { prompt };
+            const response = await fetch('/api/generateProjectInsights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(functionData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Cloud function returned status: ${response.status}`);
+            }
+            
+            return await response.json() as AIInsightsResponse;
+        } catch (error) {
+            console.error("Project insights generation failed:", error);
+            throw error;
+        }
     };
     
     const generateMeetingAgenda = async (prompt: string): Promise<MeetingAgenda> => {
         if (!currentUser) throw new Error("User not authenticated");
         
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
-        const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-preview-04-17',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' }
-        });
-
-        let jsonStr = response.text.trim();
-        const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-        const match = jsonStr.match(fenceRegex);
-        if (match && match[2]) { jsonStr = match[2].trim(); }
-
-        return JSON.parse(jsonStr) as MeetingAgenda;
+        try {
+            // Call the Cloud Function
+            const functionData = { prompt };
+            const response = await fetch('/api/generateMeetingAgenda', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(functionData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Cloud function returned status: ${response.status}`);
+            }
+            
+            return await response.json() as MeetingAgenda;
+        } catch (error) {
+            console.error("Meeting agenda generation failed:", error);
+            throw error;
+        }
     };
 
     const generateProjectIdeas = async (prompt: string): Promise<ProjectIdea[]> => {
         if (!currentUser) throw new Error("User not authenticated");
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
-        const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-preview-04-17',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' }
-        });
-
-        let jsonStr = response.text.trim();
-        const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-        const match = jsonStr.match(fenceRegex);
-        if (match && match[2]) { jsonStr = match[2].trim(); }
-
-        return JSON.parse(jsonStr) as ProjectIdea[];
+        
+        try {
+            // Call the Cloud Function
+            const functionData = { prompt };
+            const response = await fetch('/api/generateProjectIdeas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(functionData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Cloud function returned status: ${response.status}`);
+            }
+            
+            return await response.json() as ProjectIdea[];
+        } catch (error) {
+            console.error("Project ideas generation failed:", error);
+            throw error;
+        }
     };
     
 

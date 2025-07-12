@@ -451,7 +451,18 @@ export const onUserDocumentWrite = onDocumentWritten("users/{userId}", async (ev
 // --- Secure Gemini API Proxy Functions ---
 
 const getGeminiResponse = async (prompt: string): Promise<string> => {
-  const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+  // Get API key from Firebase Functions config
+  const apiKey = process.env.FUNCTIONS_EMULATOR ? 
+    process.env.API_KEY : // Use local .env in emulator
+    process.env.FIREBASE_CONFIG ? 
+      JSON.parse(process.env.FIREBASE_CONFIG).gemini.api_key : // Parse from FIREBASE_CONFIG
+      null; // Fallback
+      
+  if (!apiKey) {
+    throw new Error("Gemini API key not found. Please set it using 'firebase functions:config:set gemini.api_key=YOUR_API_KEY'");
+  }
+  
+  const ai = new GoogleGenAI({apiKey});
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-04-17",
     contents: prompt,
