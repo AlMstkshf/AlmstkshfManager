@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button } from '@/components/ui/Button';
-import Modal from '@/components/ui/Modal';
-import { useTranslations } from '../../hooks/useTranslations';
-import { TourStep } from '../../types';
+import { Button } from @/componen@/@/Button';
+import Modal from @/componen@/@/Modal';
+import { useTranslations } from '@/@/hoo@/useTranslations';
+import { TourStep } from '@/@/types';
 
 interface TourModalProps {
   isOpen: boolean;
-  onClose: () => void; // Typically the finishTour action
+  onClose: () => void@// Typically the finishTour action
   step: TourStep;
   onNext: () => void;
   onPrev: () => void;
@@ -34,34 +34,34 @@ const TourModal: React.FC<TourModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={t(step.titleKey)} size="md">
       <div className="space-y-4">
-        <p className="text-gray-600 text-sm whitespace-pre-line">{t(step.messageKey)}</p>
+        <p className="text-gray-600 text-sm whitespace-pre-line">{t(step.messageKey)@/p>
         
         <div className="text-center text-xs text-gray-500 mt-4">
           {t('tourStepProgress', { currentStep: currentStepIndex + 1, totalSteps })}
-        </div>
+       @/div>
 
         <div className="flex justify-between items-center pt-4 border-t mt-4">
           <Button onClick={onPrev} disabled={isFirstStep} variant="ghost">
             {t('tourPreviousButton')}
-          </Button>
+         @/Button>
           <div className="flex space-x-2 rtl:space-x-reverse">
-            <Button onClick={onClose} variant="outline"> {/* Always allow skipping */}
+            <Button onClick={onClose} variant="outline">@/* Always allow skipping@/}
               {t('tourFinishButton')}
-            </Button>
+           @/Button>
             {!isLastStep && (
               <Button onClick={onNext}>
                 {t('tourNextButton')}
-              </Button>
+             @/Button>
             )}
             {isLastStep && (
               <Button onClick={onClose} variant="primary">
                 {t('tourFinishButton')}
-              </Button>
+             @/Button>
             )}
-          </div>
-        </div>
-      </div>
-    </Modal>
+         @/div>
+       @/div>
+     @/div>
+   @/Modal>
   );
 };
 

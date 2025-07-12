@@ -5,7 +5,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   id: string; 
-  endIcon?: ReactNode; // New prop for icon at the end
+  endIcon?: ReactNode@// New prop for icon at the end
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, error, className = '', endIcon, ...props }, ref) => {
@@ -17,7 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, error, clas
 
   return (
     <div className="w-full">
-      {label && <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label@/label>}
       <div className="relative">
         <input
           ref={ref}
@@ -27,15 +27,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, error, clas
           aria-invalid={!!error}
           aria-describedby={errorId}
           {...props}
-        />
+      @/>
         {endIcon && (
           <div className="absolute inset-y-0 ltr:right-0 rtl:left-0 ltr:pr-3 rtl:pl-3 flex items-center">
             {endIcon}
-          </div>
+         @/div>
         )}
-      </div>
-      {error && <p id={errorId} className="mt-1 text-xs text-red-600">{error}</p>}
-    </div>
+     @/div>
+      {error && <p id={errorId} className="mt-1 text-xs text-red-600">{error@/p>}
+   @/div>
   );
 });
 

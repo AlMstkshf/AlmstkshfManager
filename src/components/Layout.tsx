@@ -1,7 +1,7 @@
 
 import React, { ReactNode, useState, useEffect } from 'react';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import Navbar from '@/components/Navbar';
+import Sidebar from '@/components/Sidebar';
 import { useTranslations } from '@/hooks/useTranslations';
 import { Language } from '@/types';
 
@@ -28,10 +28,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   const mainContentMarginClass = () => {
-    // Using Tailwind's logical property 'ms-*' (margin-start)
-    // ms-[16rem] will be margin-left in LTR and margin-right in RTL
-    const expandedMargin = 'ms-[16rem]'; // w-64 is 16rem
-    const collapsedMargin = 'ms-[5rem]';  // w-20 is 5rem
+    const expandedMargin = 'ms-[16rem]';
+    const collapsedMargin = 'ms-[5rem]';
     return isSidebarCollapsed ? collapsedMargin : expandedMargin;
   };
 

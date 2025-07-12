@@ -31,7 +31,7 @@ const Badge: React.FC<BadgeProps> = ({
   return (
     <div className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}>
       {children}
-    </div>
+   @/div>
   );
 };
 

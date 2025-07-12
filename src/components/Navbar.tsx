@@ -64,7 +64,6 @@ const Navbar: React.FC = () => {
         setIsDropdownOpen(false);
       }
       if (searchRef.current && !searchRef.current.contains(event.target as Node) && isSearchOpen) {
-        // Don't close if clicking the search toggle button itself
         const targetElement = event.target as HTMLElement;
         if (!targetElement.closest('[data-search-toggle]')) {
              setIsSearchOpen(false);
@@ -84,13 +83,12 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         <Link to="/" aria-label={t('appName')}>
           <img 
-            src="https://i.ibb.co/F4Hg9gWh/ALMSTKSHF-MANAGER-APP-FROM-ALMSTKSHF-FOR-MEDIA-MONITORING.jpg" 
+            src="http://i.ibb.co/F4Hg9gZ/ALMSTKSHF-MANAGER-APP-FROM-ALMSTKSHF-FOR-MEDIA-MONITORING.jpg" 
             alt={t('appName')} 
             className="h-10 w-auto"
           />
         </Link>
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          {/* Search Component */}
           <div ref={searchRef} className="relative flex items-center">
             {isSearchOpen ? (
               <div className="flex items-center transition-all duration-300 ease-in-out">
@@ -112,7 +110,7 @@ const Navbar: React.FC = () => {
                     aria-label={t('searchToggleCloseAriaLabel')}
                     data-search-toggle 
                 >
-                    <XMarkIcon className="w-5 h-5"/>
+                    <XMarkIcon className="w-5 h-5" />
                 </Button>
               </div>
             ) : (
@@ -124,7 +122,7 @@ const Navbar: React.FC = () => {
                 aria-label={t('searchToggleOpenAriaLabel')}
                 data-search-toggle
               >
-                <MagnifyingGlassIcon className="w-5 h-5"/>
+                <MagnifyingGlassIcon className="w-5 h-5" />
               </Button>
             )}
           </div>
@@ -144,7 +142,7 @@ const Navbar: React.FC = () => {
               >
                 <span className="text-sm text-gray-700 hidden sm:inline">{currentUser.name}</span>
                 {currentUser.photoURL ? (
-                  <img src={currentUser.photoURL} alt={currentUser.name} className="w-8 h-8 rounded-full object-cover" />
+                  <img src={currentUser.photoURL} alt={currentUser.name || ''} className="w-8 h-8 rounded-full object-cover" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center text-sm font-semibold">
                     {currentUser.name?.charAt(0).toUpperCase()}
@@ -170,7 +168,7 @@ const Navbar: React.FC = () => {
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                       role="menuitem"
                     >
-                      <UserCircleIcon className="w-5 h-5 ms-3 text-gray-500" />
+                      <UserCircleIcon className="w-5 h-5 me-3 text-gray-500" />
                       {t('sidebarMyProfile')}
                     </Link>
                     <button 
@@ -178,7 +176,7 @@ const Navbar: React.FC = () => {
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                       role="menuitem"
                     >
-                      <LogoutIcon className="w-5 h-5 ms-3 text-gray-500" />
+                      <LogoutIcon className="w-5 h-5 me-3 text-gray-500" />
                       {t('logoutButton')}
                     </button>
                   </div>

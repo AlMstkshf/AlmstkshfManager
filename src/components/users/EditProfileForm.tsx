@@ -1,16 +1,16 @@
 
 import React, { useState, FormEvent, useEffect, useRef } from 'react';
-import { useAppContext } from '../../contexts/AppContext';
-import { useTranslations } from '../../hooks/useTranslations';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { User } from '../../types';
-import { storage, auth, db } from '../../firebase';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
-import { updateProfile } from 'firebase/auth';
-import { doc, updateDoc } from 'firebase/firestore';
+import { useAppContext } from '@/@/contex@/AppContext';
+import { useTranslations } from '@/@/hoo@/useTranslations';
+import { Button } from @/componen@/@/Button';
+import { Input } from @/componen@/@/Input';
+import { Textarea } from @/componen@/@/Textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from @/componen@/@/Select';
+import { User } from '@/@/types';
+import { storage, auth, db } from '@/@/firebase';
+import { ref, uploadString, getDownloadURL } from 'fireba@/storage';
+import { updateProfile } from 'fireba@/auth';
+import { doc, updateDoc } from 'fireba@/firestore';
 
 
 interface EditProfileFormProps {
@@ -46,11 +46,11 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+      if (!['ima@/jpeg', 'ima@/png', 'ima@/gif'].includes(file.type)) {
         alert('Please select a valid image file (JPEG, PNG, GIF).');
         return;
       }
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      if (file.size > 2 * 1024 * 1024) @// 2MB limit
         alert('File size should not exceed 2MB.');
         return;
       }
@@ -74,20 +74,20 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
     try {
         let photoURL = currentUser.photoURL;
 
-        // If a new photo was selected (photoPreview is a data URL)
+      @// If a new photo was selected (photoPreview is a data URL)
         if (photoPreview && photoPreview.startsWith('data:image')) {
-            const storageRef = ref(storage, `profile_pictures/${currentUser.id}`);
+            const storageRef = ref(storage, `profile_pictur@/${currentUser.id}`);
             const uploadTask = await uploadString(storageRef, photoPreview, 'data_url');
             photoURL = await getDownloadURL(uploadTask.ref);
         }
 
-        // Update Firebase Auth profile
+      @// Update Firebase Auth profile
         await updateProfile(auth.currentUser, {
             displayName: name,
             photoURL: photoURL
         });
         
-        // Update Firestore profile
+      @// Update Firestore profile
         const userDocRef = doc(db, 'users', currentUser.id);
         await updateDoc(userDocRef, {
             name: name,
@@ -99,7 +99,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
 
     } catch (error) {
         console.error("Failed to update profile:", error);
-        setNameError(t('error')); // Generic error
+        setNameError(t('error'))@// Generic error
     } finally {
         setIsLoading(false);
     }
@@ -111,22 +111,22 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex flex-col items-center space-y-3">
         <img 
-          src={photoPreview || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'U')}&background=0D8ABC&color=fff&size=96`} 
+          src={photoPreview || `http@//ui-avatars.@/?name=${encodeURIComponent(name || 'U')}&background=0D8ABC&color=fff&size=96`} 
           alt="Profile Preview" 
           className="w-24 h-24 rounded-full object-cover shadow-md"
-        />
+      @/>
         <input
           type="file"
           id="photo-upload"
           ref={fileInputRef}
           className="hidden"
-          accept="image/png, image/jpeg, image/gif"
+          accept="ima@/png, ima@/jpeg, ima@/gif"
           onChange={handlePhotoChange}
-        />
+      @/>
         <Button type="button" variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isLoading}>
             Change Photo
-        </Button>
-      </div>
+       @/Button>
+     @/div>
 
       <Input
         label={t('userNameLabel')}
@@ -137,8 +137,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
         required
         disabled={isLoading}
         aria-describedby="profileNameError"
-      />
-      {nameError && <p id="profileNameError" className="text-xs text-red-600 -mt-3 mb-2">{nameError}</p>}
+    @/>
+      {nameError && <p id="profileNameError" className="text-xs text-red-600 -mt-3 mb-2">{nameError@/p>}
 
       <Input
         label={t('userEmailLabel')}
@@ -146,15 +146,15 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
         type="email"
         value={currentUser.email}
         disabled 
-      />
+    @/>
 
       <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-2">
         <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
           {t('cancel')}
-        </Button>
-        <Button type="submit" isLoading={isLoading}>{t('updateProfileButton')}</Button>
-      </div>
-    </form>
+       @/Button>
+        <Button type="submit" isLoading={isLoading}>{t('updateProfileButton')@/Button>
+     @/div>
+   @/form>
   );
 };
 

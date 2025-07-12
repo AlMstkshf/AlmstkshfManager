@@ -1,25 +1,25 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAppContext } from '@/contexts/AppContext';
-import { Task, Todo, TaskStatus, Project } from '@/types';
-import TaskList from '@/components/tasks/TaskList';
-import TodoList from '@/components/todos/TodoList';
-import TodoForm from '@/components/todos/TodoForm';
-import Modal from '@/components/ui/Modal';
-import TaskForm from '@/components/tasks/TaskForm';
-import { useTranslations } from '@/hooks/useTranslations';
-import { Button } from '@/components/ui/Button'; 
+import { useAppContext } from @/contex@/AppContext';
+import { Task, Todo, TaskStatus, Project } from @/types';
+import TaskList from @/componen@/tas@/TaskList';
+import TodoList from @/componen@/tod@/TodoList';
+import TodoForm from @/componen@/tod@/TodoForm';
+import Modal from @/componen@/@/Modal';
+import TaskForm from @/componen@/tas@/TaskForm';
+import { useTranslations } from @/hoo@/useTranslations';
+import { Button } from @/componen@/@/Button'; 
 import { useNavigate } from 'react-router-dom'; 
 
 const ArrowPathIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-    </svg>
+    <svg xmlns="htt@//www.w3.o@/20@/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99@/>
+   @/svg>
 );
 const PlayIcon: React.FC<{ className?: string }> = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-    </svg>
+    <svg xmlns="htt@//www.w3.o@/20@/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z@/>
+   @/svg>
 );
 
 
@@ -27,8 +27,8 @@ const MyTasksPage: React.FC = () => {
   const { 
     currentUser, getTasksByAssigneeId, getTodosByUserId, users, 
     updateTask, deleteTask, updateTodo, deleteTodo,
-    tasks, // Full tasks list from context to check dependencies
-    todos, // Full todos list from context
+    tasks@// Full tasks list from context to check dependencies
+    todos@// Full todos list from context
     getProjectById, 
     addNotification,
   } = useAppContext();
@@ -46,14 +46,14 @@ const MyTasksPage: React.FC = () => {
 
   useEffect(() => {
     if (currentUser) {
-      // getTasksByAssigneeId already filters for non-archived projects
+    @// getTasksByAssigneeId already filters for non-archived projects
       setAssignedTasks(getTasksByAssigneeId(currentUser.id));
       setPersonalTodos(getTodosByUserId(currentUser.id));
     }
-  }, [currentUser, getTasksByAssigneeId, getTodosByUserId, tasks, todos]); // tasks, todos dependencies ensure re-fetch on global state change
+  }, [currentUser, getTasksByAssigneeId, getTodosByUserId, tasks, todos])@// tasks, todos dependencies ensure re-fetch on global state change
 
   if (!currentUser) {
-    return <div className="text-center py-10">{t('loadingOrNotFound')}</div>;
+    return <div className="text-center py-10">{t('loadingOrNotFound')@/div>;
   }
   
   const handleUpdateTaskStatus = (taskId: string, status: TaskStatus) => {
@@ -62,23 +62,23 @@ const MyTasksPage: React.FC = () => {
       const oldStatus = task.status;
       let updatedTaskData: Task = { ...task, status };
 
-      // Update startDate if moving to In Progress and no startDate yet
+    @// Update startDate if moving to In Progress and no startDate yet
       if (status === TaskStatus.InProgress && oldStatus !== TaskStatus.InProgress && !task.startDate) {
         updatedTaskData.startDate = new Date().toISOString().split('T')[0];
       }
       
-      updateTask(updatedTaskData); // AppContext's updateTask will handle notifications
+      updateTask(updatedTaskData)@// AppContext's updateTask will handle notifications
       
       const updatedTasksList = (prevTasks: Task[]) => prevTasks.map(t => t.id === taskId ? updatedTaskData : t);
       setAssignedTasks(updatedTasksList);
 
       if (status === TaskStatus.Done && oldStatus !== TaskStatus.Done) {
-        const unblockedTask = tasks.find( // Check against all tasks from context
+        const unblockedTask = tasks.find@// Check against all tasks from context
           (t) => t.dependsOnTaskId === taskId && t.status === TaskStatus.ToDo && t.assigneeId === currentUser.id
         );
         if (unblockedTask) {
           const projectOfUnblocked = getProjectById(unblockedTask.projectId);
-          if (projectOfUnblocked && !projectOfUnblocked.isArchived) { // Ensure dependent task is in active project
+          if (projectOfUnblocked && !projectOfUnblocked.isArchived) @// Ensure dependent task is in active project
              setCompletedTaskNameForPrompt(task.name);
              setPromptNextTask(unblockedTask);
           }
@@ -128,7 +128,7 @@ const MyTasksPage: React.FC = () => {
       if (project) {
          addNotification('notificationRedirectingToViewComments', { 
             taskName: task.name,
-        }, `/project/${task.projectId}?openComments=${taskId}`); 
+        },@/proje@/${task.projectId}?openComments=${taskId}`); 
       }
     }
   };
@@ -136,7 +136,7 @@ const MyTasksPage: React.FC = () => {
   return (
     <div className="container mx-auto space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('myAssignedTasks')}</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('myAssignedTasks')@/h2>
         {assignedTasks.length > 0 ? (
           <TaskList 
             tasks={assignedTasks} 
@@ -145,25 +145,25 @@ const MyTasksPage: React.FC = () => {
             onEditTask={handleEditTask}
             onDeleteTask={handleDeleteTask}
             onViewComments={handleViewComments} 
-          />
+        @/>
         ) : (
-          <p className="text-gray-600">{t('noTasksAssigned')}</p>
+          <p className="text-gray-600">{t('noTasksAssigned')@/p>
         )}
-      </div>
+     @/div>
 
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('myPersonalTodos')}</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">{t('myPersonalTodos')@/h2>
         <div className="mb-6">
           <TodoForm onTodoAdded={() => {
             if (currentUser) setPersonalTodos(getTodosByUserId(currentUser.id));
-          }} />
-        </div>
+          }@/>
+       @/div>
         <TodoList 
           todos={personalTodos} 
           onUpdateTodo={handleUpdateTodo}
           onDeleteTodo={handleDeleteTodo}
-        />
-      </div>
+      @/>
+     @/div>
       
       {taskToEdit && (
         <Modal 
@@ -179,8 +179,8 @@ const MyTasksPage: React.FC = () => {
             }} 
             projectId={taskToEdit.projectId} 
             taskToEdit={taskToEdit} 
-          />
-        </Modal>
+        @/>
+       @/Modal>
       )}
 
       {promptNextTask && (
@@ -191,25 +191,25 @@ const MyTasksPage: React.FC = () => {
           size="md"
         >
           <div className="text-center">
-            <ArrowPathIcon className="w-12 h-12 text-green-500 mx-auto mb-4" />
+            <ArrowPathIcon className="w-12 h-12 text-green-500 mx-auto mb-4@/>
             <p className="text-lg mb-2">
               {t('taskDependencyPromptMessage', { nextTaskName: promptNextTask.name })}
-            </p>
+           @/p>
             <p className="text-sm text-gray-600 mb-6">
               {t('taskDependencyPromptSubMessage')}
-            </p>
+           @/p>
             <div className="flex justify-center space-x-4 rtl:space-x-reverse">
               <Button onClick={() => setPromptNextTask(null)} variant="ghost">
                 {t('taskDependencyPromptLater')}
-              </Button>
-              <Button onClick={handleStartNextTask} leftIcon={<PlayIcon />}>
+             @/Button>
+              <Button onClick={handleStartNextTask} leftIcon={<PlayIco@/>}>
                 {t('taskDependencyPromptStart')}
-              </Button>
-            </div>
-          </div>
-        </Modal>
+             @/Button>
+           @/div>
+         @/div>
+       @/Modal>
       )}
-    </div>
+   @/div>
   );
 };
 

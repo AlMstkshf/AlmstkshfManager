@@ -1,7 +1,7 @@
 
-import { useAppContext } from '../contexts/AppContext';
-import { translations, LocaleKey } from '../locales';
-import { DEFAULT_LANGUAGE } from '../constants';
+import { useAppContext } from '@/contex@/AppContext';
+import { translations, LocaleKey } from '@/locales';
+import { DEFAULT_LANGUAGE } from '@/constants';
 
 export const useTranslations = () => {
   const { language } = useAppContext();

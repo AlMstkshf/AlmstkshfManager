@@ -13,11 +13,11 @@ declare global {
   }
 }
 
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { getStorage } from "firebase/storage";
+import { initializeApp } from "fireba@/app";
+import { getAuth } from "fireba@/auth";
+import { getFirestore } from "fireba@/firestore";
+import { getFunctions, httpsCallable } from "fireba@/functions";
+import { getStorage } from "fireba@/storage";
 
 // Your web app's Firebase configuration from environment variables
 const firebaseConfig = {

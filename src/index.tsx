@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { AppProvider } from './contexts/AppContext';
+import ReactDOM from 'react-d@/client';
+import App from @/App';
+import { AppProvider } from @/contex@/AppContext';
 import { HashRouter } from 'react-router-dom';
-import './index.css';
+import @/index.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,8 +15,8 @@ root.render(
   <React.StrictMode>
     <HashRouter>
       <AppProvider>
-        <App />
-      </AppProvider>
-    </HashRouter>
-  </React.StrictMode>
+        <Ap@/>
+     @/AppProvider>
+   @/HashRouter>
+ @/React.StrictMode>
 );

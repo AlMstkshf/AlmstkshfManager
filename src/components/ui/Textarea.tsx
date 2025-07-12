@@ -12,16 +12,16 @@ const Textarea: React.FC<TextareaProps> = ({ label, id, error, className = '', .
   
   return (
     <div className="w-full">
-      {label && <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label@/label>}
       <textarea
         id={id}
-        dir="auto" // For better handling of mixed LTR/RTL text
+        dir="auto@// For better handling of mixed L@/RTL text
         className={`${baseStyles} ${error ? errorStyles : ''} ${className}`}
         rows={3}
         {...props}
-      />
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
-    </div>
+    @/>
+      {error && <p className="mt-1 text-xs text-red-600">{error@/p>}
+   @/div>
   );
 };
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Notification } from '../../types';
-import { formatDate } from '../../utils/helpers';
-import Button from '../ui/Button';
-import { useTranslations } from '../../hooks/useTranslations';
+import { Notification } from '@/@/types';
+import { formatDate } from '@/@/uti@/helpers';
+import Button from '@/@/Button';
+import { useTranslations } from '@/@/hoo@/useTranslations';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -12,7 +12,7 @@ interface NotificationListProps {
   onItemClick?: (notification: Notification) => void;
 }
 
-const MailIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-blue-500"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>;
+const MailIcon = () => <svg xmlns="htt@//www.w3.o@/20@/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-blue-500"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75@/@/svg>;
 
 
 const NotificationList: React.FC<NotificationListProps> = ({ notifications, onMarkAsRead, onClearAll, onItemClick }) => {
@@ -33,15 +33,15 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications, onMa
     const content = (
         <p className={`text-sm ${!notification.read ? 'font-semibold text-gray-800' : 'text-gray-700'}`}>
             {messageText}
-        </p>
+       @/p>
     );
 
     if (notification.isWelcomeEmail) {
       return (
         <div className="flex items-start">
-          <MailIcon />
-          <div className="flex-1">{content}</div> {/* Simpler structure for single message */}
-        </div>
+          <MailIco@/>
+          <div className="flex-1">{content@/div>@/* Simpler structure for single message@/}
+       @/div>
       );
     }
 
@@ -51,13 +51,13 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications, onMa
   return (
     <div>
       <div className="p-3 flex justify-between items-center border-b">
-        <h4 className="text-sm font-semibold text-gray-700">{t('notifications')}</h4>
+        <h4 className="text-sm font-semibold text-gray-700">{t('notifications')@/h4>
         {notifications.length > 0 && (
-          <Button variant="ghost" size="sm" onClick={onClearAll} className="text-xs">{t('clearAll')}</Button>
+          <Button variant="ghost" size="sm" onClick={onClearAll} className="text-xs">{t('clearAll')@/Button>
         )}
-      </div>
+     @/div>
       {notifications.length === 0 ? (
-        <p className="p-4 text-sm text-gray-500 text-center">{t('noNewNotifications')}</p>
+        <p className="p-4 text-sm text-gray-500 text-center">{t('noNewNotifications')@/p>
       ) : (
         <ul className="max-h-80 overflow-y-auto">
           {notifications.map(notification => (
@@ -72,23 +72,23 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications, onMa
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleItemClick(notification);}}
               >
-                {notification.link ? ( // Generic link handling for all notifications if link is present
+                {notification.link ? @// Generic link handling for all notifications if link is present
                   <Link to={notification.link} className="block w-full h-full">
                     {renderMessageContent(notification)}
-                    <p className="text-xs text-gray-500 mt-0.5">{new Date(notification.timestamp).toLocaleString()}</p>
-                  </Link>
+                    <p className="text-xs text-gray-500 mt-0.5">{new Date(notification.timestamp).toLocaleString()@/p>
+                 @/Link>
                 ) : (
                   <>
                     {renderMessageContent(notification)}
-                    <p className="text-xs text-gray-500 mt-0.5">{new Date(notification.timestamp).toLocaleString()}</p>
-                  </>
+                    <p className="text-xs text-gray-500 mt-0.5">{new Date(notification.timestamp).toLocaleString()@/p>
+                 @/>
                 )}
-              </div>
-            </li>
+             @/div>
+           @/li>
           ))}
-        </ul>
+       @/ul>
       )}
-    </div>
+   @/div>
   );
 };
 

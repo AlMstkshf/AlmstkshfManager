@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -15,9 +14,9 @@ import GuidelinesPage from '@/pages/GuidelinesPage';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAppContext } from '@/contexts/AppContext';
 import TourModal from '@/components/tour/TourModal';
-import SetPasswordPage from '@/pages/SetPasswordPage'; // For invite flow
-import RequestPasswordResetPage from '@/pages/RequestPasswordResetPage'; // New for password reset
-import ResetPasswordPage from '@/pages/ResetPasswordPage'; // New for password reset
+import SetPasswordPage from '@/pages/SetPasswordPage';
+import RequestPasswordResetPage from '@/pages/RequestPasswordResetPage';
+import ResetPasswordPage from '@/pages/ResetPasswordPage';
 
 const App: React.FC = () => {
   const { 

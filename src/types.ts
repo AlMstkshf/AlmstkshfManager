@@ -147,7 +147,7 @@ export interface ProjectTimelineMilestone {
   description: string;
   dueDate: string;
   isCompleted: boolean;
-  tasks: string[]; // Task IDs
+  tasks: string[]@// Task IDs
 }
 
 export interface ProjectInsightItem {

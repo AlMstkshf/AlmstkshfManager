@@ -2,7 +2,7 @@ export type LocaleKey = string;
 
 export const translations: Record<string, Record<LocaleKey, string>> = {
   en: {
-    // Common
+  @// Common
     'loading': 'Loading...',
     'save': 'Save',
     'cancel': 'Cancel',
@@ -39,14 +39,14 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'password': 'Password',
     'confirmPassword': 'Confirm Password',
     
-    // Dashboard
+  @// Dashboard
     'welcomeBack': 'Welcome back',
     'projectsOverview': 'Projects Overview',
     'tasksOverview': 'Tasks Overview',
     'urgentTasks': 'Urgent Tasks',
     'recentActivity': 'Recent Activity',
     
-    // Projects
+  @// Projects
     'createProject': 'Create Project',
     'editProject': 'Edit Project',
     'deleteProject': 'Delete Project',
@@ -57,7 +57,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'budgetOptional': 'Budget (Optional)',
     'noProjectsFound': 'No projects found',
     
-    // Tasks
+  @// Tasks
     'createTask': 'Create Task',
     'editTask': 'Edit Task',
     'deleteTask': 'Delete Task',
@@ -70,7 +70,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'noTasksInProject': 'No tasks in this project',
     'myTasks': 'My Tasks',
     
-    // Task Status
+  @// Task Status
     'toDo': 'To Do',
     'inProgress': 'In Progress',
     'review': 'Review',
@@ -78,12 +78,12 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'blocked': 'Blocked',
     'overdue': 'Overdue',
     
-    // Task Priority
+  @// Task Priority
     'low': 'Low',
     'medium': 'Medium',
     'high': 'High',
     
-    // Users
+  @// Users
     'createUser': 'Create User',
     'editUser': 'Edit User',
     'deleteUser': 'Delete User',
@@ -91,7 +91,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'userEmail': 'User Email',
     'userPermissions': 'User Permissions',
     
-    // Notifications
+  @// Notifications
     'notificationTaskCreated': 'Task "{{name}}" has been created',
     'notificationTaskUpdated': 'Task "{{name}}" has been updated to {{status}}',
     'notificationTaskDeleted': 'Task "{{name}}" has been deleted',
@@ -99,14 +99,14 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'notificationProjectUpdated': 'Project "{{name}}" has been updated',
     'notificationProjectDeleted': 'Project "{{name}}" has been deleted',
     
-    // Errors
+  @// Errors
     'errorGeneric': 'An error occurred. Please try again.',
     'errorNetwork': 'Network error. Please check your connection.',
     'errorAuth': 'Authentication error. Please login again.',
     'errorPermission': 'You do not have permission to perform this action.',
   },
   ar: {
-    // Common
+  @// Common
     'loading': 'جاري التحميل...',
     'save': 'حفظ',
     'cancel': 'إلغاء',
@@ -143,14 +143,14 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'password': 'كلمة المرور',
     'confirmPassword': 'تأكيد كلمة المرور',
     
-    // Dashboard
+  @// Dashboard
     'welcomeBack': 'مرحباً بعودتك',
     'projectsOverview': 'نظرة عامة على المشاريع',
     'tasksOverview': 'نظرة عامة على المهام',
     'urgentTasks': 'المهام العاجلة',
     'recentActivity': 'النشاط الأخير',
     
-    // Projects
+  @// Projects
     'createProject': 'إنشاء مشروع',
     'editProject': 'تعديل المشروع',
     'deleteProject': 'حذف المشروع',
@@ -161,7 +161,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'budgetOptional': 'الميزانية (اختياري)',
     'noProjectsFound': 'لم يتم العثور على مشاريع',
     
-    // Tasks
+  @// Tasks
     'createTask': 'إنشاء مهمة',
     'editTask': 'تعديل المهمة',
     'deleteTask': 'حذف المهمة',
@@ -174,7 +174,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'noTasksInProject': 'لا توجد مهام في هذا المشروع',
     'myTasks': 'مهامي',
     
-    // Task Status
+  @// Task Status
     'toDo': 'للقيام',
     'inProgress': 'قيد التنفيذ',
     'review': 'مراجعة',
@@ -182,12 +182,12 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'blocked': 'محظور',
     'overdue': 'متأخر',
     
-    // Task Priority
+  @// Task Priority
     'low': 'منخفض',
     'medium': 'متوسط',
     'high': 'عالي',
     
-    // Users
+  @// Users
     'createUser': 'إنشاء مستخدم',
     'editUser': 'تعديل المستخدم',
     'deleteUser': 'حذف المستخدم',
@@ -195,7 +195,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'userEmail': 'بريد المستخدم الإلكتروني',
     'userPermissions': 'صلاحيات المستخدم',
     
-    // Notifications
+  @// Notifications
     'notificationTaskCreated': 'تم إنشاء المهمة "{{name}}"',
     'notificationTaskUpdated': 'تم تحديث المهمة "{{name}}" إلى {{status}}',
     'notificationTaskDeleted': 'تم حذف المهمة "{{name}}"',
@@ -203,7 +203,7 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'notificationProjectUpdated': 'تم تحديث المشروع "{{name}}"',
     'notificationProjectDeleted': 'تم حذف المشروع "{{name}}"',
     
-    // Errors
+  @// Errors
     'errorGeneric': 'حدث خطأ. يرجى المحاولة مرة أخرى.',
     'errorNetwork': 'خطأ في الشبكة. يرجى التحقق من الاتصال.',
     'errorAuth': 'خطأ في المصادقة. يرجى تسجيل الدخول مرة أخرى.',

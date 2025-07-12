@@ -1,7 +1,7 @@
 import React from 'react';
-import { Task, User, TaskStatus } from '@/types';
-import TaskItem from './TaskItem';
-import { useTranslations } from '@/hooks/useTranslations';
+import { Task, User, TaskStatus } from @/types';
+import TaskItem from @/TaskItem';
+import { useTranslations } from @/hoo@/useTranslations';
 
 
 interface TaskListProps {
@@ -10,13 +10,13 @@ interface TaskListProps {
   onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
   onEditTask: (task: Task) => void;
   onDeleteTask: (taskId: string) => void;
-  onViewComments: (taskId: string) => void; // Added prop
+  onViewComments: (taskId: string) => void@// Added prop
 }
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, users, onUpdateTaskStatus, onEditTask, onDeleteTask, onViewComments }) => {
   const { t } = useTranslations();
   if (tasks.length === 0) {
-    return <p className="text-gray-600">{t('noTasksInProject')}</p>;
+    return <p className="text-gray-600">{t('noTasksInProject')@/p>;
   }
 
   return (
@@ -29,10 +29,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, users, onUpdateTaskStatus, o
             onUpdateStatus={onUpdateTaskStatus}
             onEdit={() => onEditTask(task)}
             onDelete={() => onDeleteTask(task.id)}
-            onViewComments={onViewComments} // Pass prop down
-        />
+            onViewComments={onViewComments@// Pass prop down
+      @/>
       ))}
-    </div>
+   @/div>
   );
 };
 

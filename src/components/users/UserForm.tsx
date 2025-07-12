@@ -1,13 +1,13 @@
 
 import React, { useState, FormEvent, useEffect } from 'react';
-import { useAppContext } from '@/contexts/AppContext';
-import { useTranslations } from '@/hooks/useTranslations';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Checkbox from '@/components/ui/Checkbox';
-import { User, UserPermissions, Permission, TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from '@/types';
-import { adminInviteUser } from '@/firebase';
+import { useAppContext } from @/contex@/AppContext';
+import { useTranslations } from @/hoo@/useTranslations';
+import Button from @/componen@/@/Button';
+import Input from @/componen@/@/Input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from @/componen@/@/select';
+import Checkbox from @/componen@/@/Checkbox';
+import { User, UserPermissions, Permission, TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from @/types';
+import { adminInviteUser } from @/firebase';
 
 
 interface UserFormProps {
@@ -47,7 +47,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
     if (!email.trim()) {
       setError(t('genericRequiredError', { fieldName: t('userEmailLabel') }));
       return false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if @/\S+@\S+\.\@/.test(email)) {
       setError(t('emailInvalidError'));
       return false;
     }
@@ -128,7 +128,7 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
           error={error.includes(t('userNameLabel')) ? error : undefined}
           required
-        />
+      @/>
         <Input
           label={t('userEmailLabel')}
           id="userEmail"
@@ -138,29 +138,29 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
           placeholder={t('userEmailPlaceholder')}
           error={error.includes(t('userEmailLabel')) || error.includes(t('emailInvalidError')) ? error : undefined}
           required
-          disabled={!!userToEdit} // Can't edit email of existing user
-        />
-      </div>
+          disabled={!!userToEdit@// Can't edit email of existing user
+      @/>
+     @/div>
        {error && <div className="text-xs text-red-600 -mt-3 mb-2">
-            <p>{error}</p>
-        </div>}
+            <p>{error@/p>
+       @/div>}
 
       <fieldset className="p-4 border rounded-md">
-        <legend className="text-md font-semibold px-2">{t('permissions')}</legend>
+        <legend className="text-md font-semibold px-2">{t('permissions')@/legend>
         
         <div className="mb-4">
-          <label className="text-sm font-medium text-gray-700 block mb-2">{t('permissionPresets')}</label>
+          <label className="text-sm font-medium text-gray-700 block mb-2">{t('permissionPresets')@/label>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(ADMIN_PERMISSIONS)}>{t('applyAdminPreset')}</Button>
-            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(PROJECT_MANAGER_PERMISSIONS)}>{t('applyPMPreset')}</Button>
-            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(TEAM_MEMBER_PERMISSIONS)}>{t('applyTMPreset')}</Button>
-          </div>
-        </div>
+            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(ADMIN_PERMISSIONS)}>{t('applyAdminPreset')@/Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(PROJECT_MANAGER_PERMISSIONS)}>{t('applyPMPreset')@/Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => applyPreset(TEAM_MEMBER_PERMISSIONS)}>{t('applyTMPreset')@/Button>
+         @/div>
+       @/div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
             {PERMISSION_GROUPS.map(group => (
               <div key={group.title}>
-                  <h4 className="font-medium text-gray-800 mb-2">{group.title}</h4>
+                  <h4 className="font-medium text-gray-800 mb-2">{group.title@/h4>
                   <div className="space-y-2">
                     {group.perms.map(p => (
                        <Checkbox
@@ -170,22 +170,22 @@ const UserForm: React.FC<UserFormProps> = ({ onClose, userToEdit }) => {
                           checked={permissions[p]}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePermissionChange(p, e.target.checked)}
                           disabled={userToEdit?.id === currentUser?.id && p === Permission.MANAGE_ORGANIZATION}
-                        />
+                      @/>
                     ))}
-                  </div>
-              </div>
+                 @/div>
+             @/div>
             ))}
-        </div>
+       @/div>
 
-      </fieldset>
+     @/fieldset>
 
       <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-2">
         <Button type="button" variant="ghost" onClick={onClose} disabled={isLoading}>
           {t('cancel')}
-        </Button>
-        <Button type="submit" isLoading={isLoading}>{userToEdit ? t('updateUserBtn') : t('addUserBtn')}</Button>
-      </div>
-    </form>
+       @/Button>
+        <Button type="submit" isLoading={isLoading}>{userToEdit ? t('updateUserBtn') : t('addUserBtn')@/Button>
+     @/div>
+   @/form>
   );
 };
 
