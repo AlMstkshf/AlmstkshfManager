@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/Button';
 import { useTranslations } from '@/hooks/useTranslations';
 import { LocaleKey } from '@/locales';
 import { useAppContext } from '@/contexts/AppContext';
-import { Badge } from '@/components/ui/Badge';
 
 
 interface TaskItemProps {

@@ -18,7 +18,13 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/types": ["./types.ts"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/constants": ["./constants.ts"],
+      "@/locales": ["./locales.ts"]
     }
   },
   "include": ["src", "./pages", "./components", "./types.ts", "./utils", "./hooks", "./contexts", "./constants", "./locales"],
