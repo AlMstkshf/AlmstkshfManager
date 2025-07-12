@@ -26,3 +26,4 @@ const Textarea: React.FC<TextareaProps> = ({ label, id, error, className = '', .
 };
 
 export default Textarea;
+export { Textarea };

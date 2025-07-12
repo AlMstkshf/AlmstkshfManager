@@ -1,7 +1,7 @@
 import React from 'react';
-import { Task, User, TaskStatus } from '../../types';
+import { Task, User, TaskStatus } from '@/types';
 import TaskItem from './TaskItem';
-import { useTranslations } from '../../hooks/useTranslations';
+import { useTranslations } from '@/hooks/useTranslations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';

@@ -42,3 +42,4 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, error, clas
 Input.displayName = 'Input';
 
 export default Input;
+export { Input };

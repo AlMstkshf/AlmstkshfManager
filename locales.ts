@@ -1,0 +1,212 @@
+export type LocaleKey = string;
+
+export const translations: Record<string, Record<LocaleKey, string>> = {
+  en: {
+    // Common
+    'loading': 'Loading...',
+    'save': 'Save',
+    'cancel': 'Cancel',
+    'delete': 'Delete',
+    'edit': 'Edit',
+    'add': 'Add',
+    'create': 'Create',
+    'update': 'Update',
+    'close': 'Close',
+    'yes': 'Yes',
+    'no': 'No',
+    'confirm': 'Confirm',
+    'search': 'Search',
+    'filter': 'Filter',
+    'sort': 'Sort',
+    'name': 'Name',
+    'description': 'Description',
+    'status': 'Status',
+    'priority': 'Priority',
+    'dueDate': 'Due Date',
+    'assignee': 'Assignee',
+    'project': 'Project',
+    'task': 'Task',
+    'tasks': 'Tasks',
+    'projects': 'Projects',
+    'users': 'Users',
+    'dashboard': 'Dashboard',
+    'profile': 'Profile',
+    'settings': 'Settings',
+    'logout': 'Logout',
+    'login': 'Login',
+    'register': 'Register',
+    'email': 'Email',
+    'password': 'Password',
+    'confirmPassword': 'Confirm Password',
+    
+    // Dashboard
+    'welcomeBack': 'Welcome back',
+    'projectsOverview': 'Projects Overview',
+    'tasksOverview': 'Tasks Overview',
+    'urgentTasks': 'Urgent Tasks',
+    'recentActivity': 'Recent Activity',
+    
+    // Projects
+    'createProject': 'Create Project',
+    'editProject': 'Edit Project',
+    'deleteProject': 'Delete Project',
+    'projectName': 'Project Name',
+    'projectDescription': 'Project Description',
+    'projectColor': 'Project Color',
+    'budgetLabel': 'Budget',
+    'budgetOptional': 'Budget (Optional)',
+    'noProjectsFound': 'No projects found',
+    
+    // Tasks
+    'createTask': 'Create Task',
+    'editTask': 'Edit Task',
+    'deleteTask': 'Delete Task',
+    'taskName': 'Task Name',
+    'taskDescription': 'Task Description',
+    'taskStatus': 'Task Status',
+    'taskPriority': 'Task Priority',
+    'taskDueDate': 'Task Due Date',
+    'taskAssignee': 'Task Assignee',
+    'noTasksInProject': 'No tasks in this project',
+    'myTasks': 'My Tasks',
+    
+    // Task Status
+    'toDo': 'To Do',
+    'inProgress': 'In Progress',
+    'review': 'Review',
+    'done': 'Done',
+    'blocked': 'Blocked',
+    'overdue': 'Overdue',
+    
+    // Task Priority
+    'low': 'Low',
+    'medium': 'Medium',
+    'high': 'High',
+    
+    // Users
+    'createUser': 'Create User',
+    'editUser': 'Edit User',
+    'deleteUser': 'Delete User',
+    'userName': 'User Name',
+    'userEmail': 'User Email',
+    'userPermissions': 'User Permissions',
+    
+    // Notifications
+    'notificationTaskCreated': 'Task "{{name}}" has been created',
+    'notificationTaskUpdated': 'Task "{{name}}" has been updated to {{status}}',
+    'notificationTaskDeleted': 'Task "{{name}}" has been deleted',
+    'notificationProjectCreated': 'Project "{{name}}" has been created',
+    'notificationProjectUpdated': 'Project "{{name}}" has been updated',
+    'notificationProjectDeleted': 'Project "{{name}}" has been deleted',
+    
+    // Errors
+    'errorGeneric': 'An error occurred. Please try again.',
+    'errorNetwork': 'Network error. Please check your connection.',
+    'errorAuth': 'Authentication error. Please login again.',
+    'errorPermission': 'You do not have permission to perform this action.',
+  },
+  ar: {
+    // Common
+    'loading': 'جاري التحميل...',
+    'save': 'حفظ',
+    'cancel': 'إلغاء',
+    'delete': 'حذف',
+    'edit': 'تعديل',
+    'add': 'إضافة',
+    'create': 'إنشاء',
+    'update': 'تحديث',
+    'close': 'إغلاق',
+    'yes': 'نعم',
+    'no': 'لا',
+    'confirm': 'تأكيد',
+    'search': 'بحث',
+    'filter': 'تصفية',
+    'sort': 'ترتيب',
+    'name': 'الاسم',
+    'description': 'الوصف',
+    'status': 'الحالة',
+    'priority': 'الأولوية',
+    'dueDate': 'تاريخ الاستحقاق',
+    'assignee': 'المكلف',
+    'project': 'المشروع',
+    'task': 'المهمة',
+    'tasks': 'المهام',
+    'projects': 'المشاريع',
+    'users': 'المستخدمون',
+    'dashboard': 'لوحة التحكم',
+    'profile': 'الملف الشخصي',
+    'settings': 'الإعدادات',
+    'logout': 'تسجيل الخروج',
+    'login': 'تسجيل الدخول',
+    'register': 'التسجيل',
+    'email': 'البريد الإلكتروني',
+    'password': 'كلمة المرور',
+    'confirmPassword': 'تأكيد كلمة المرور',
+    
+    // Dashboard
+    'welcomeBack': 'مرحباً بعودتك',
+    'projectsOverview': 'نظرة عامة على المشاريع',
+    'tasksOverview': 'نظرة عامة على المهام',
+    'urgentTasks': 'المهام العاجلة',
+    'recentActivity': 'النشاط الأخير',
+    
+    // Projects
+    'createProject': 'إنشاء مشروع',
+    'editProject': 'تعديل المشروع',
+    'deleteProject': 'حذف المشروع',
+    'projectName': 'اسم المشروع',
+    'projectDescription': 'وصف المشروع',
+    'projectColor': 'لون المشروع',
+    'budgetLabel': 'الميزانية',
+    'budgetOptional': 'الميزانية (اختياري)',
+    'noProjectsFound': 'لم يتم العثور على مشاريع',
+    
+    // Tasks
+    'createTask': 'إنشاء مهمة',
+    'editTask': 'تعديل المهمة',
+    'deleteTask': 'حذف المهمة',
+    'taskName': 'اسم المهمة',
+    'taskDescription': 'وصف المهمة',
+    'taskStatus': 'حالة المهمة',
+    'taskPriority': 'أولوية المهمة',
+    'taskDueDate': 'تاريخ استحقاق المهمة',
+    'taskAssignee': 'المكلف بالمهمة',
+    'noTasksInProject': 'لا توجد مهام في هذا المشروع',
+    'myTasks': 'مهامي',
+    
+    // Task Status
+    'toDo': 'للقيام',
+    'inProgress': 'قيد التنفيذ',
+    'review': 'مراجعة',
+    'done': 'مكتمل',
+    'blocked': 'محظور',
+    'overdue': 'متأخر',
+    
+    // Task Priority
+    'low': 'منخفض',
+    'medium': 'متوسط',
+    'high': 'عالي',
+    
+    // Users
+    'createUser': 'إنشاء مستخدم',
+    'editUser': 'تعديل المستخدم',
+    'deleteUser': 'حذف المستخدم',
+    'userName': 'اسم المستخدم',
+    'userEmail': 'بريد المستخدم الإلكتروني',
+    'userPermissions': 'صلاحيات المستخدم',
+    
+    // Notifications
+    'notificationTaskCreated': 'تم إنشاء المهمة "{{name}}"',
+    'notificationTaskUpdated': 'تم تحديث المهمة "{{name}}" إلى {{status}}',
+    'notificationTaskDeleted': 'تم حذف المهمة "{{name}}"',
+    'notificationProjectCreated': 'تم إنشاء المشروع "{{name}}"',
+    'notificationProjectUpdated': 'تم تحديث المشروع "{{name}}"',
+    'notificationProjectDeleted': 'تم حذف المشروع "{{name}}"',
+    
+    // Errors
+    'errorGeneric': 'حدث خطأ. يرجى المحاولة مرة أخرى.',
+    'errorNetwork': 'خطأ في الشبكة. يرجى التحقق من الاتصال.',
+    'errorAuth': 'خطأ في المصادقة. يرجى تسجيل الدخول مرة أخرى.',
+    'errorPermission': 'ليس لديك صلاحية لتنفيذ هذا الإجراء.',
+  }
+};

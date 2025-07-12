@@ -1,13 +1,12 @@
 import React from 'react';
-import { Task, User, TaskStatus, TaskPriority, TaskCommentSentiment } from '../../types';
-import { formatDate, getTaskStatusColor, getTaskPriorityPill } from '../../utils/helpers';
+import { Task, User, TaskStatus, TaskPriority, TaskCommentSentiment } from '@/types';
+import { formatDate, getTaskStatusColor, getTaskPriorityPill } from '@/utils/helpers';
 import Select from '../ui/Select';
-import Button from '../ui/Button';
-import { useTranslations } from '../../hooks/useTranslations';
-import { LocaleKey } from '../../locales';
-import { useAppContext } from '../../contexts/AppContext';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { useTranslations } from '@/hooks/useTranslations';
+import { LocaleKey } from '@/locales';
+import { useAppContext } from '@/contexts/AppContext';
+import { Badge } from '@/components/ui/Badge';
 
 
 interface TaskItemProps {
@@ -25,7 +24,7 @@ const CommentIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" vi
 const ExclamationCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-500"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>;
 
 const LockClosedIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 text-gray-500 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>;
-const LockOpenIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3 text-green-500 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 10.5h16.5M12 15.75h.008v.008H12V15.75z" /></svg>;
+
 
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, users, onUpdateStatus, onEdit, onDelete, onViewComments }) => {
@@ -134,7 +133,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, users, onUpdateStatus, onEdit
             aria-label={t('statusLabel')}
             disabled={(isBlockedByDependency && task.status !== TaskStatus.Blocked && task.status !== TaskStatus.ToDo) || !canEditThisTask}
           >
-            {Object.values(TaskStatus).map(statusValue => (
+            {Object.values(TaskStatus).map((statusValue: TaskStatus) => (
               <option key={statusValue} value={statusValue} className="bg-white text-gray-800">
                 {t(taskStatusMap[statusValue])}
               </option>
