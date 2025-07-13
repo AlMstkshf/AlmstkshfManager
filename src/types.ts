@@ -63,13 +63,11 @@ export const ADMIN_PERMISSIONS: UserPermissions = {
   [Permission.GENERATE_MEETING_AGENDA]: true,
 };
 
-// Language enum
 export enum Language {
   EN = 'en',
   AR = 'ar'
 }
 
-// Task related types
 export enum TaskStatus {
   ToDo = 'To Do',
   InProgress = 'In Progress',
@@ -100,7 +98,6 @@ export interface Task {
   updatedAt: string;
 }
 
-// Project related types
 export interface Project {
   id: string;
   name: string;
@@ -147,7 +144,7 @@ export interface ProjectTimelineMilestone {
   description: string;
   dueDate: string;
   isCompleted: boolean;
-  tasks: string[]@// Task IDs
+  tasks: string[];
 }
 
 export interface ProjectInsightItem {
@@ -169,9 +166,10 @@ export interface AIQuickTaskSuggestion {
   description: string;
   priority: TaskPriority;
   estimatedDuration: string;
+  dueDateSuggestion: string;
+  assigneeId?: string;
 }
 
-// Meeting and agenda types
 export interface MeetingAgenda {
   discussionPoints: Array<{
     taskName?: string;
@@ -200,7 +198,6 @@ export interface MeetingAgenda {
   planningSuggestions: string[];
 }
 
-// Todo types
 export interface Todo {
   id: string;
   text: string;
@@ -211,16 +208,12 @@ export interface Todo {
   updatedAt: string;
 }
 
-// Tour types
 export interface TourStep {
-  id: string;
-  title: string;
-  content: string;
-  target?: string;
-  placement?: 'top' | 'bottom' | 'left' | 'right';
+  titleKey: LocaleKey;
+  messageKey: LocaleKey;
+  targetHighlight?: string;
 }
 
-// Activity log types
 export enum UserStatus {
   Active = 'Active',
   Invited = 'Invited',
@@ -243,7 +236,8 @@ export enum ActivityActionType {
   UserLoggedOut = 'USER_LOGGED_OUT',
   UserActivatedByInvite = 'USER_ACTIVATED_BY_INVITE',
   UserPasswordResetRequested = 'USER_PASSWORD_RESET_REQUESTED',
-  UserPasswordResetCompleted = 'USER_PASSWORD_RESET_COMPLETED'
+  UserPasswordResetCompleted = 'USER_PASSWORD_RESET_COMPLETED',
+  CommentAdded = "COMMENT_ADDED",
 }
 
 export interface ActivityLog {
@@ -259,25 +253,40 @@ export interface ActivityLog {
   organizationId: string;
 }
 
-// Notification types
 export interface Notification {
   id: string;
   messageKey: LocaleKey;
-  messageParams: Record<string, string | number>;
+  messageParams?: Record<string, string | number>;
   read: boolean;
-  timestamp: number;
+  timestamp: any;
   link?: string;
   organizationId: string;
+  userId: string;
+  isWelcomeEmail?: boolean;
+  type: 'info' | 'success' | 'warning' | 'error';
+  legacyMessage?: string;
 }
 
-// Comment types
+export enum TaskCommentSentiment {
+    Positive = 'positive',
+    Negative = 'negative',
+    Neutral = 'neutral',
+    Unknown = 'unknown',
+}
+  
 export interface TaskComment {
-  id: string;
-  taskId: string;
-  userId: string;
-  userName: string;
-  content: string;
-  timestamp: number;
-  sentiment?: 'positive' | 'negative' | 'neutral';
-  organizationId: string;
+    id: string;
+    taskId: string;
+    projectId: string;
+    userId: string;
+    text: string;
+    timestamp: any;
+    sentiment: TaskCommentSentiment;
+    isUrgent: boolean;
+    organizationId: string;
+}
+
+export interface AISentimentResponse {
+    sentiment: TaskCommentSentiment;
+    isUrgent: boolean;
 }

@@ -7,7 +7,6 @@ import { Modal } from '@/components/ui/modal';
 import ProjectForm from '@/components/projects/ProjectForm';
 import TaskForm from '@/components/tasks/TaskForm';
 import { generateId } from '@/utils/helpers';
-import { generateProjectIdeas as generateProjectIdeasFunction } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,7 +22,7 @@ const ProjectIdeasPage: React.FC = () => {
   const { t } = useTranslations();
   const {
     saveProjectIdea, removeSavedIdea, savedIdeas, isIdeaSaved,
-    getActiveProjects, currentUser, addNotification
+    getActiveProjects, currentUser, addNotification, generateProjectIdeas
   } = useAppContext();
 
   const [topic, setTopic] = useState<string>('');
@@ -55,18 +54,14 @@ const ProjectIdeasPage: React.FC = () => {
     setGeneratedIdeas([]);
 
     try {
-      const prompt = t('projectIdeaGeneratorPrompt', { userInput: topic });
-
-      const result = await generateProjectIdeasFunction({ prompt });
-      const parsedData = result.data as Omit<ProjectIdea, 'id' | 'organizationId'>[];
-      
-      if (Array.isArray(parsedData) && parsedData.every(item => item.name && item.description && Array.isArray(item.features))) {
-        setGeneratedIdeas(parsedData.map(idea => ({ ...idea, id: generateId(), organizationId: currentUser.organizationId })));
-        if (parsedData.length === 0) {
+      const ideas = await generateProjectIdeas(topic);
+      if (Array.isArray(ideas) && ideas.every(item => item.name && item.description && Array.isArray(item.features))) {
+        setGeneratedIdeas(ideas.map(idea => ({ ...idea, id: generateId(), organizationId: currentUser.organizationId })));
+        if (ideas.length === 0) {
           setError(t('projectIdeaGeneratorNoIdeas'));
         }
       } else {
-        setError(t('projectIdeaGeneratorError') + ' (Invalid format from API)');
+        setError(t('projectIdeaGeneratorError') + '(Invalid format from API)');
       }
     } catch (err) {
       console.error("Error generating ideas:", err);
