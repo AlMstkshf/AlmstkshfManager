@@ -1,5 +1,5 @@
 
-import { useAppContext } from '@/contex@/AppContext';
+import { useAppContext } from '@/contexts/AppContext';
 import { translations, LocaleKey } from '@/locales';
 import { DEFAULT_LANGUAGE } from '@/constants';
 

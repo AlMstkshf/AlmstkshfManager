@@ -1,7 +1,7 @@
 import React from 'react';
 import { Todo } from '@/types';
 import { formatDate } from '@/utils/helpers';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 import { useTranslations } from '@/hooks/useTranslations';
 
 interface TodoItemProps {

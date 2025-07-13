@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Notification } from '@/types';
 import { formatDate } from '@/utils/helpers';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 import { useTranslations } from '@/hooks/useTranslations';
 
 interface NotificationListProps {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Task, User, TaskStatus } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
 import { formatDate, getTaskStatusColor } from '@/utils/helpers';
+import { LocaleKey } from '@/locales';
 
 interface ProjectTimelineViewProps {
   tasks: Task[];
@@ -43,7 +44,7 @@ const ProjectTimelineView: React.FC<ProjectTimelineViewProps> = ({ tasks, projec
               <div className="flex justify-between items-center mb-2">
                 <h4 className="text-md font-semibold text-gray-700">{task.name}</h4>
                 <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getTaskStatusColor(task.status)}`}>
-                  {t(`taskStatus${task.status.replace(/ /g, '')}` as any)}
+                  {t(`taskStatus${task.status.replace(/ /g, '')}` as LocaleKey)}
                 </span>
               </div>
               

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { TaskComment, User, TaskCommentSentiment } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import Textarea from '@/components/ui/Textarea';
+import Button from '@/components/ui/Button';
 import { LocaleKey } from '@/locales';
 
 interface TaskCommentsProps {

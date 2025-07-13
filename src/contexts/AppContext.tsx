@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode, useCallback, use
 import { 
   Project, Task, Todo, Notification, User, Organization, TaskStatus, TaskPriority, 
   Language, UserStatus, TaskComment, TaskCommentSentiment, AISentimentResponse,
-  AIInsightsResponse, ProjectInsightItem, TourStep, ProjectIdea, SavedProjectIdea,
+  AIInsightsResponse, ProjectInsightItem, TourStep, SavedProjectIdea,
   ActivityLog, ActivityActionType, Permission, TEAM_MEMBER_PERMISSIONS, ADMIN_PERMISSIONS,
   PROJECT_MANAGER_PERMISSIONS, MeetingAgenda
 } from '@/types';
@@ -24,7 +24,7 @@ import {
 } from 'firebase/firestore';
 import { DEFAULT_LANGUAGE } from '@/constants';
 import { translations } from '@/locales';
-import type { LocaleKey } from '@/types';
+import type { LocaleKey, ProjectIdea } from '@/types';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 // Helper to map backend role to frontend permissions

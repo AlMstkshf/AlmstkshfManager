@@ -2,8 +2,8 @@
 import React, { useState, useMemo } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { useTranslations } from '@/hooks/useTranslations';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
 import EditProfileForm from '@/components/users/EditProfileForm';
 import ProjectList from '@/components/projects/ProjectList';
 import TaskList from '@/components/tasks/TaskList';

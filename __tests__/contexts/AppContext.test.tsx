@@ -1,7 +1,6 @@
 import React from 'react';
-import React from 'react';
 import { render, screen, renderHook, act } from '@testing-library/react';
-import { AppProvider, useAppContext } from '../../src/contexts/AppContext';
+import { AppProvider, useAppContext } from '@/contexts/AppContext';
 import * as firebaseFirestore from 'firebase/firestore';
 
 // Mock Firebase functions

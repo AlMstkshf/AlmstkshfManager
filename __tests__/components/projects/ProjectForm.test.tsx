@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '../../test-utils';
-import { useAppContext } from '../../../contexts/AppContext';
-import ProjectForm from '../../../components/projects/ProjectForm';
-import { Project } from '../../../types';
-import { PROJECT_COLORS } from '../../../constants';
+import { useAppContext } from '@/contexts/AppContext';
+import ProjectForm from '@/components/projects/ProjectForm';
+import { Project } from '@/types';
+import { PROJECT_COLORS } from '@/constants';
 
 // Mock the useAppContext hook
-jest.mock('../../../contexts/AppContext', () => ({
+jest.mock('@/contexts/AppContext', () => ({
   useAppContext: jest.fn(),
 }));
 
 // Mock the useTranslations hook
-jest.mock('../../../hooks/useTranslations', () => ({
+jest.mock('@/hooks/useTranslations', () => ({
   useTranslations: () => ({
     t: (key: string) => key, // Return the key as the translation
   }),

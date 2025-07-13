@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ProjectInsightItem, ProjectInsightType, User, Project, Task } from '@/types';
+import { ProjectInsightItem, User, Project, Task } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useAppContext } from '@/contexts/AppContext';
+import { ProjectInsightType } from '../../types';
 
 interface AIInsightsPanelProps {
   insights: ProjectInsightItem[];

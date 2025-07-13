@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
+import { LocaleKey } from '@/types';
 
 const GuidelinesPage: React.FC = () => {
   const { t } = useTranslations();
 
-  const GuidelineSection: React.FC<{ titleKey: any; children: React.ReactNode }> = ({ titleKey, children }) => (
+  const GuidelineSection: React.FC<{ titleKey: LocaleKey; children: React.ReactNode }> = ({ titleKey, children }) => (
     <section className="mb-8 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-primary mb-4 border-b pb-2">{t(titleKey)}</h2>
       <div className="space-y-3 text-gray-700 leading-relaxed text-sm">

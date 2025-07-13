@@ -2,9 +2,9 @@
 import React, { useState, useMemo } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { useTranslations } from '@/hooks/useTranslations';
-import { Modal } from '@/components/ui/modal';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import UserForm from '@/components/users/UserForm';
 import { User, Permission } from '@/types';
 import { Card } from '@/components/ui/Card';

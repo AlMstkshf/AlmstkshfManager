@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '../../test-utils';
-import { useAppContext } from '../../../contexts/AppContext';
-import ProtectedRoute from '../../../components/auth/ProtectedRoute';
+import { useAppContext } from '@/contexts/AppContext';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 // Mock the useAppContext hook
-jest.mock('../../../contexts/AppContext', () => ({
+jest.mock('@/contexts/AppContext', () => ({
   useAppContext: jest.fn(),
 }));
 

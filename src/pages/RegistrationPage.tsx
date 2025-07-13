@@ -3,8 +3,8 @@ import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppContext } from '@/contexts/AppContext';
 import { useTranslations } from '@/hooks/useTranslations';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { User } from '@/types'; 
 
@@ -273,7 +273,7 @@ const RegistrationPage: React.FC = () => {
           </Button>
         </form>
         <p className="text-sm text-center text-gray-700 mt-6">
-          <Link to="/login" className="font-medium text-primary hover:text-primary-dark hover:underline">
+          <Link to="/login" className="font--medium text-primary hover:text-primary-dark hover:underline">
             {t('switchToLoginLink')}
           </Link>
         </p>

@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AppProvider } from '../contexts/AppContext';
+import { AppProvider } from '@/contexts/AppContext';
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return (

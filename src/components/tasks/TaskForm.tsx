@@ -2,10 +2,10 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Task, TaskStatus, TaskPriority, User, AIQuickTaskSuggestion, Project } from '@/types';
 import { useAppContext } from '@/contexts/AppContext';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Input from '@/components/ui/Input';
+import Textarea from '@/components/ui/Textarea';
+import Button from '@/components/ui/Button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { useTranslations } from '@/hooks/useTranslations';
 import { LocaleKey } from '@/locales';
 

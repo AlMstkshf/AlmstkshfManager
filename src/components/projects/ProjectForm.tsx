@@ -2,9 +2,9 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Project } from '@/types';
 import { useAppContext } from '@/contexts/AppContext';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import Input from '@/components/ui/Input';
+import Textarea from '@/components/ui/Textarea';
+import Button from '@/components/ui/Button';
 import { PROJECT_COLORS } from '@/constants';
 import { useTranslations } from '@/hooks/useTranslations';
 

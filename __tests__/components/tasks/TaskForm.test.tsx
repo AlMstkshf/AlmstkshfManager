@@ -1,16 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '../../test-utils';
-import { useAppContext } from '../../../contexts/AppContext';
-import TaskForm from '../../../components/tasks/TaskForm';
-import { Task, TaskPriority, TaskStatus } from '../../../types';
+import { useAppContext } from '@/contexts/AppContext';
+import TaskForm from '@/components/tasks/TaskForm';
+import { Task, TaskPriority, TaskStatus } from '@/types';
 
 // Mock the useAppContext hook
-jest.mock('../../../contexts/AppContext', () => ({
+jest.mock('@/contexts/AppContext', () => ({
   useAppContext: jest.fn(),
 }));
 
 // Mock the useTranslations hook
-jest.mock('../../../hooks/useTranslations', () => ({
+jest.mock('@/hooks/useTranslations', () => ({
   useTranslations: () => ({
     t: (key: string) => key, // Return the key as the translation
   }),

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Task, User, TaskStatus, TaskPriority, TaskCommentSentiment } from '@/types';
 import { formatDate, getTaskStatusColor, getTaskPriorityPill } from '@/utils/helpers';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import Button from '@/components/ui/Button';
 import { useTranslations } from '@/hooks/useTranslations';
 import { LocaleKey } from '@/locales';
 import { useAppContext } from '@/contexts/AppContext';
