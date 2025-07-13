@@ -5,27 +5,27 @@ import {
   AIInsightsResponse, ProjectInsightItem, TourStep, ProjectIdea, SavedProjectIdea,
   ActivityLog, ActivityActionType, Permission, TEAM_MEMBER_PERMISSIONS, ADMIN_PERMISSIONS,
   PROJECT_MANAGER_PERMISSIONS, MeetingAgenda
-} from @/types';
+} from '@/types';
 import { 
     auth, db, signUpUser as signUpUserFunction, completeInvitedUserSetup as completeInvitedUserSetupFunction, 
     deleteUserByAdmin, analyzeTaskComment as analyzeTaskCommentFunction,
     generateProjectIdeas as generateProjectIdeasFunction,
     generateProjectInsights as generateProjectInsightsFunction,
     generateMeetingAgenda as generateMeetingAgendaFunction
-} from @/firebase';
+} from '@/firebase';
 import { 
     onAuthStateChanged, 
     signInWithEmailAndPassword, 
     signOut,
     sendPasswordResetEmail,
-} from 'fireba@/auth';
+} from 'firebase/auth';
 import { 
     collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, writeBatch, getDocs, serverTimestamp, orderBy, getDoc 
-} from 'fireba@/firestore';
-import { DEFAULT_LANGUAGE } from @/constants';
-import { translations } from @/locales';
-import type { LocaleKey } from @/types';
-import type { User as FirebaseUser } from 'fireba@/auth';
+} from 'firebase/firestore';
+import { DEFAULT_LANGUAGE } from '@/constants';
+import { translations } from '@/locales';
+import type { LocaleKey } from '@/types';
+import type { User as FirebaseUser } from 'firebase/auth';
 
 // Helper to map backend role to frontend permissions
 const getPermissionsFromRole = (role: string) => {
@@ -39,7 +39,6 @@ const getPermissionsFromRole = (role: string) => {
 
 // --- Context Type Definition ---
 interface AppContextType {
-@// State
   projects: Project[];
   tasks: Task[];
   todos: Todo[];
@@ -52,7 +51,6 @@ interface AppContextType {
   loading: boolean;
   language: Language;
   
-@// Auth
   loginUser: (email: string, pass: string) => Promise<{ success: boolean; error?: LocaleKey }>;
   logout: () => void;
   registerAndCreateOrg: (userData: Omit<User, 'id' | 'organizationId' | 'status' | 'permissions'>, orgName: string, pass: string) => Promise<{ success: boolean; error?: LocaleKey }>;
@@ -60,7 +58,6 @@ interface AppContextType {
   completeUserSetup: (token: string, pass: string, fullName: string) => Promise<{ success: boolean; error?: LocaleKey }>;
   requestPasswordReset: (email: string) => Promise<boolean>;
   
-@// Data Getters
   getProjectById: (projectId: string) => Project | undefined;
   getTasksByProjectId: (projectId: string) => Task[];
   getTasksByAssigneeId: (userId: string) => Task[];
@@ -72,7 +69,6 @@ interface AppContextType {
   getTasksInProgressByAssignee: (userId: string) => Task[];
   getUserById: (userId: string) => User | undefined;
   
-@// Data Mutators
   addProject: (projectData: Omit<Project, 'id' | 'ownerId' | 'organizationId'>, fromIdea?: boolean) => Promise<void>;
   updateProject: (project: Project) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
@@ -96,12 +92,10 @@ interface AppContextType {
   removeSavedIdea: (ideaId: string) => Promise<void>;
   isIdeaSaved: (ideaId: string) => boolean;
 
-@// Notifications
-  addNotification: (messageKey: LocaleKey, messageParams?: Record<string, string | number>, link?: string) => Promise<void>;
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'organizationId' | 'userId'>) => Promise<void>;
   markNotificationAsRead: (notificationId: string) => Promise<void>;
   clearNotifications: () => Promise<void>;
 
-@// Tour
   isTourOpen: boolean;
   tourSteps: TourStep[];
   currentTourStepIndex: number;
@@ -110,7 +104,6 @@ interface AppContextType {
   nextTourStep: () => void;
   prevTourStep: () => void;
 
-@// Language & Other
   setLanguage: (language: Language) => void;
   logActivity: (actionType: ActivityActionType, data: { details?: string, targetEntityType?: 'project' | 'task' | 'user' | 'auth' | 'comment' | 'organization', targetEntityId?: string, targetEntityName?: string }) => void;
 
@@ -146,7 +139,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 const userDocRef = doc(db, 'users', user.uid);
                 const unsubProfile = onSnapshot(userDocRef, async (docSnap) => {
                     if (docSnap.exists()) {
-                        const tokenResult = await user.getIdTokenResult(true)@// Force refresh claims
+                        const tokenResult = await user.getIdTokenResult(true);
                         const claims = tokenResult.claims;
                         const profileData = docSnap.data();
 
@@ -193,7 +186,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         const unsubs: (()=>void)[] = [];
 
-      @// Fetch organization data once
         const orgDocRef = doc(db, 'organizations', orgId);
         const unsubOrg = onSnapshot(orgDocRef, (doc) => {
             if(doc.exists()){
@@ -202,7 +194,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         });
         unsubs.push(unsubOrg);
 
-      @// Subscribe to organization-scoped collections
         const collectionsToSubscribe = [
             'projects', 'tasks', 'users', 'savedIdeas', 'activityLogs', 'notifications', 'taskComments'
         ];
@@ -222,7 +213,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             unsubs.push(unsub);
         });
 
-      @// Subscribe to user-specific todos
         const todosQuery = query(collection(db, 'todos'), where('userId', '==', currentUser.id));
         const unsubTodos = onSnapshot(todosQuery, (snapshot) => {
              const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -353,14 +343,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const getTasksCompletedByAssignee = useCallback((userId: string) => getTasksByAssigneeId(userId).filter(t => t.status === TaskStatus.Done), [getTasksByAssigneeId]);
     const getTasksInProgressByAssignee = useCallback((userId: string) => getTasksByAssigneeId(userId).filter(t => t.status === TaskStatus.InProgress), [getTasksByAssigneeId]);
 
-    const addNotification = async (messageKey: LocaleKey, messageParams: Record<string, string | number> = {}, link?: string) => {
+    const addNotification = async (notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'organizationId' | 'userId'>) => {
         if (!currentUser) return;
         const newNotification = {
-            messageKey,
-            messageParams,
+            ...notification,
             read: false,
             timestamp: serverTimestamp(),
-            link,
             organizationId: currentUser.organizationId,
             userId: currentUser.id,
         };
@@ -559,7 +547,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             setLanguage, logActivity, canCurrentUserManageUsers, isCurrentUserAdmin, canCurrentUserEditTask, canCurrentUserDeleteTask, generateProjectInsights, generateMeetingAgenda, generateProjectIdeas
         }}>
             {children}
-       @/AppContext.Provider>
+        </AppContext.Provider>
     );
 };
 

@@ -1,22 +1,22 @@
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Project } from '@/@/types';
-import { useAppContext } from '@/@/contex@/AppContext';
-import Input from '@/@/Input';
-import Textarea from '@/@/Textarea';
-import Button from '@/@/Button';
-import { PROJECT_COLORS } from '@/@/constants';
-import { useTranslations } from '@/@/hoo@/useTranslations';
+import { Project } from '@/types';
+import { useAppContext } from '@/contexts/AppContext';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { PROJECT_COLORS } from '@/constants';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface ProjectFormProps {
   onClose: () => void;
-  projectToEdit?: Project | Omit<Project, 'id' | 'ownerId' | 'color'> & { id?: string; ownerId?: string; color?: string }@// Allow partial for prefill
+  projectToEdit?: Project | Omit<Project, 'id' | 'ownerId' | 'color'> & { id?: string; ownerId?: string; color?: string };
 }
 
 const CheckIcon = ({ className = "h-5 w-5" }: { className?: string }) => (
-  <svg xmlns="htt@//www.w3.o@/20@/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={className}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5@/>
- @/svg>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+  </svg>
 );
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => {
@@ -36,14 +36,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
     if (projectToEdit) {
       setName(projectToEdit.name || '');
       setDescription(projectToEdit.description || '');
-    @// Ensure startDate has a value, default if not present in projectToEdit
       setStartDate(projectToEdit.startDate || new Date().toISOString().split('T')[0]);
       setEndDate(projectToEdit.endDate || '');
       setBudget(projectToEdit.budget || '');
-    @// Ensure color has a value, default if not present in projectToEdit
       setColor(projectToEdit.color || PROJECT_COLORS[0].value);
     } else {
-    @// Reset for a truly new project (not from idea prefill)
       setName('');
       setDescription('');
       setStartDate(new Date().toISOString().split('T')[0]);
@@ -69,22 +66,22 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
     if (isEditing && projectToEdit && 'id' in projectToEdit) {
       updateProject({ ...(projectToEdit as Project), ...projectDataPayload });
     } else {
-      addProject(projectDataPayload, !!projectToEdit)@// Pass true if projectToEdit (even partial) was used for prefill
+      addProject(projectDataPayload, !!projectToEdit);
     }
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Input label={t('projectName')} id="projectName" value={name} onChange={e => setName(e.target.value)} require@/>
-      <Textarea label={t('projectDescription')} id="projectDescription" value={description} onChange={e => setDescription(e.target.value)@/>
+      <Input label={t('projectName')} id="projectName" value={name} onChange={e => setName(e.target.value)} required />
+      <Textarea label={t('projectDescription')} id="projectDescription" value={description} onChange={e => setDescription(e.target.value)} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label={t('startDate')} id="projectStartDate" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} require@/>
-        <Input label={t('endDateOptional')} id="projectEndDate" type="date" value={endDate} onChange={e => setEndDate(e.target.value)@/>
-     @/div>
-      <Input label={t('budgetOptional')} id="projectBudget" type="number" value={budget} onChange={e => setBudget(e.target.value)} placeholder="e.g., 5000@/>
+        <Input label={t('startDate')} id="projectStartDate" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+        <Input label={t('endDateOptional')} id="projectEndDate" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+      </div>
+      <Input label={t('budgetOptional')} id="projectBudget" type="number" value={budget} onChange={e => setBudget(e.target.value)} placeholder="e.g., 5000" />
       <div>
-        <label htmlFor="projectColor" className="block text-sm font-medium text-gray-700 mb-1">{t('projectColor')@/label>
+        <label htmlFor="projectColor" className="block text-sm font-medium text-gray-700 mb-1">{t('projectColor')}</label>
         <div className="flex flex-wrap gap-2">
           {PROJECT_COLORS.map(c => (
             <button
@@ -96,17 +93,17 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
               title={c.name}
               aria-pressed={color === c.value}
             >
-              {color === c.value && <CheckIcon className="w-5 h-5 text-white@/>}
-           @/button>
+              {color === c.value && <CheckIcon className="w-5 h-5 text-white" />}
+            </button>
           ))}
-       @/div>
-        <input type="hidden" id="projectColor" value={color@/>
-     @/div>
+        </div>
+        <input type="hidden" id="projectColor" value={color} />
+      </div>
       <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-2">
-        <Button type="button" variant="ghost" onClick={onClose}>{t('cancel')@/Button>
-        <Button type="submit">{isEditing ? t('updateProjectBtn') : t('createProjectBtn')@/Button>
-     @/div>
-   @/form>
+        <Button type="button" variant="ghost" onClick={onClose}>{t('cancel')}</Button>
+        <Button type="submit">{isEditing ? t('updateProjectBtn') : t('createProjectBtn')}</Button>
+      </div>
+    </form>
   );
 };
 

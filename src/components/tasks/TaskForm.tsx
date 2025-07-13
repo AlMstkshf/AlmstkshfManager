@@ -1,20 +1,20 @@
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Task, TaskStatus, TaskPriority, User, AIQuickTaskSuggestion, Project } from '@/@/types';
-import { useAppContext } from '@/@/contex@/AppContext';
-import { Input } from @/componen@/@/input';
-import { Textarea } from @/componen@/@/textarea';
-import { Button } from @/componen@/@/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from @/componen@/@/select';
-import { useTranslations } from '@/@/hoo@/useTranslations';
-import { LocaleKey } from '@/@/locales';
+import { Task, TaskStatus, TaskPriority, User, AIQuickTaskSuggestion, Project } from '@/types';
+import { useAppContext } from '@/contexts/AppContext';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTranslations } from '@/hooks/useTranslations';
+import { LocaleKey } from '@/locales';
 
 interface TaskFormProps {
   onClose: () => void;
   projectId: string;
   taskToEdit?: Task;
-  initialTaskData?: Partial<AIQuickTaskSuggestion>@// For AI pre-fill or idea pre-fill
-  projectName?: string@// For AI context, optional
+  initialTaskData?: Partial<AIQuickTaskSuggestion>;
+  projectName?: string;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, initialTaskData, projectName }) => {
@@ -39,23 +39,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       setPriority(taskToEdit.priority);
       setStatus(taskToEdit.status);
       setDependsOnTaskId(taskToEdit.dependsOnTaskId);
-      setAiDueDateSuggestion(null)@// Clear AI suggestion if editing existing task
+      setAiDueDateSuggestion(null);
     } else if (initialTaskData) {
       setName(initialTaskData.name || '');
       setDescription(initialTaskData.description || '');
       setAssigneeId(initialTaskData.assigneeId || undefined);
       setPriority(initialTaskData.priority || TaskPriority.Medium);
-      setStatus(TaskStatus.ToDo)@// Default status for new tasks from id@/AI
-      setDependsOnTaskId(undefined)@// Default for new tasks
+      setStatus(TaskStatus.ToDo);
+      setDependsOnTaskId(undefined);
       setAiDueDateSuggestion(initialTaskData.dueDateSuggestion);
-    @// Set due date only if not suggested by AI, otherwise let user decide based on suggestion
       if (!initialTaskData.dueDateSuggestion) {
         setDueDate(new Date().toISOString().split('T')[0]);
       } else {
-        setDueDate('')@// Keep empty to highlight AI suggestion
+        setDueDate('');
       }
     } else {
-    @// Completely new task, not from edit or initialData
       setName('');
       setDescription('');
       setAssigneeId(undefined);
@@ -88,7 +86,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!name) return@// Basic validation
+    if (!name) return;
 
     const taskData = {
       name,
@@ -112,81 +110,81 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="taskName" className="block text-sm font-medium text-gray-700">{t('taskName')@/label>
-        <Input id="taskName" value={name} onChange={e => setName(e.target.value)} require@/>
-     @/div>
+        <label htmlFor="taskName" className="block text-sm font-medium text-gray-700">{t('taskName')}</label>
+        <Input id="taskName" value={name} onChange={e => setName(e.target.value)} required />
+      </div>
       <div>
-        <label htmlFor="taskDescription" className="block text-sm font-medium text-gray-700">{t('taskDescriptionOptional')@/label>
-        <Textarea id="taskDescription" value={description} onChange={e => setDescription(e.target.value)@/>
-     @/div>
+        <label htmlFor="taskDescription" className="block text-sm font-medium text-gray-700">{t('taskDescriptionOptional')}</label>
+        <Textarea id="taskDescription" value={description} onChange={e => setDescription(e.target.value)} />
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="taskAssignee" className="block text-sm font-medium text-gray-700">{t('assigneeOptional')@/label>
+          <label htmlFor="taskAssignee" className="block text-sm font-medium text-gray-700">{t('assigneeOptional')}</label>
           <Select onValueChange={(value) => setAssigneeId(value)} value={assigneeId}>
             <SelectTrigger id="taskAssignee">
-              <SelectValue placeholder={t('unassigned')@/>
-           @/SelectTrigger>
+              <SelectValue placeholder={t('unassigned')} />
+            </SelectTrigger>
             <SelectContent>
               {users.map(user => (
-                <SelectItem key={user.id} value={user.id}>{user.name@/SelectItem>
+                <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
               ))}
-           @/SelectContent>
-         @/Select>
-       @/div>
+            </SelectContent>
+          </Select>
+        </div>
         <div>
-            <label htmlFor="taskDueDate" className="block text-sm font-medium text-gray-700">{t('dueDateOptional')@/label>
-            <Input id="taskDueDate" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)@/>
+            <label htmlFor="taskDueDate" className="block text-sm font-medium text-gray-700">{t('dueDateOptional')}</label>
+            <Input id="taskDueDate" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
             {aiDueDateSuggestion && (!taskToEdit || (initialTaskData && !taskToEdit)) && (
-                 <p className="text-xs text-blue-600 mt-1">{t('aiSuggestedDueDate', { suggestion: aiDueDateSuggestion})@/p>
+                 <p className="text-xs text-blue-600 mt-1">{t('aiSuggestedDueDate', { suggestion: aiDueDateSuggestion})}</p>
             )}
-       @/div>
-     @/div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="taskPriority" className="block text-sm font-medium text-gray-700">{t('priority')@/label>
+          <label htmlFor="taskPriority" className="block text-sm font-medium text-gray-700">{t('priority')}</label>
           <Select onValueChange={(value: TaskPriority) => setPriority(value)} value={priority}>
             <SelectTrigger id="taskPriority">
-              <SelectValu@/>
-           @/SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
-              {Object.values(TaskPriority).map(p => <SelectItem key={p} value={p}>{t(taskPriorityMap[p])@/SelectItem>)}
-           @/SelectContent>
-         @/Select>
-       @/div>
+              {Object.values(TaskPriority).map(p => <SelectItem key={p} value={p}>{t(taskPriorityMap[p])}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
         <div>
-          <label htmlFor="taskStatus" className="block text-sm font-medium text-gray-700">{t('status')@/label>
+          <label htmlFor="taskStatus" className="block text-sm font-medium text-gray-700">{t('status')}</label>
           <Select onValueChange={(value: TaskStatus) => setStatus(value)} value={status}>
             <SelectTrigger id="taskStatus">
-              <SelectValu@/>
-           @/SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
-              {Object.values(TaskStatus).map(s => <SelectItem key={s} value={s}>{t(taskStatusMap[s])@/SelectItem>)}
-           @/SelectContent>
-         @/Select>
-       @/div>
-     @/div>
+              {Object.values(TaskStatus).map(s => <SelectItem key={s} value={s}>{t(taskStatusMap[s])}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <div>
-        <label htmlFor="taskDependsOn" className="block text-sm font-medium text-gray-700">{t('taskDependsOn')@/label>
+        <label htmlFor="taskDependsOn" className="block text-sm font-medium text-gray-700">{t('taskDependsOn')}</label>
         <Select onValueChange={(value) => setDependsOnTaskId(value)} value={dependsOnTaskId}>
           <SelectTrigger id="taskDependsOn">
-            <SelectValue placeholder={t('noDescription')@/>
-         @/SelectTrigger>
+            <SelectValue placeholder={t('noDescription')} />
+          </SelectTrigger>
           <SelectContent>
             {availableTasksForDependency.map(task => (
-              <SelectItem key={task.id} value={task.id}>{task.name@/SelectItem>
+              <SelectItem key={task.id} value={task.id}>{task.name}</SelectItem>
             ))}
-         @/SelectContent>
-       @/Select>
-     @/div>
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="flex justify-end space-x-3 rtl:space-x-reverse pt-2">
-        <Button type="button" variant="ghost" onClick={onClose}>{t('cancel')@/Button>
-        <Button type="submit">{taskToEdit ? t('updateTaskBtn') : t('createTaskBtn')@/Button>
-     @/div>
-   @/form>
+        <Button type="button" variant="ghost" onClick={onClose}>{t('cancel')}</Button>
+        <Button type="submit">{taskToEdit ? t('updateTaskBtn') : t('createTaskBtn')}</Button>
+      </div>
+    </form>
   );
 };
 

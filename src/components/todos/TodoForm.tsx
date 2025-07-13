@@ -1,11 +1,11 @@
 import React, { useState, FormEvent } from 'react';
-import { useAppContext } from '@/@/contex@/AppContext';
-import Input from '@/@/Input';
-import Button from '@/@/Button';
-import { useTranslations } from '@/@/hoo@/useTranslations';
+import { useAppContext } from '@/contexts/AppContext';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface TodoFormProps {
-  onTodoAdded?: () => void@// Optional callback
+  onTodoAdded?: () => void;
 }
 
 const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
@@ -32,7 +32,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
         onChange={e => setText(e.target.value)}
         placeholder={t('todoPlaceholder')}
         className="flex-grow"
-    @/>
+      />
       <Input
         label={t('dueDateOptional')}
         id="todoDueDate"
@@ -40,9 +40,9 @@ const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
         value={dueDate}
         onChange={e => setDueDate(e.target.value)}
         className="w-full sm:w-auto"
-    @/>
-      <Button type="submit" size="md" className="w-full sm:w-auto">{t('addTodo')@/Button>
-   @/form>
+      />
+      <Button type="submit" size="md" className="w-full sm:w-auto">{t('addTodo')}</Button>
+    </form>
   );
 };
 

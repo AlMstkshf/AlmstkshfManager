@@ -1,7 +1,7 @@
 import React from 'react';
-import { Todo } from '@/@/types';
-import TodoItem from @/TodoItem';
-import { useTranslations } from '@/@/hoo@/useTranslations';
+import { Todo } from '@/types';
+import TodoItem from './TodoItem';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface TodoListProps {
   todos: Todo[];
@@ -12,7 +12,7 @@ interface TodoListProps {
 const TodoList: React.FC<TodoListProps> = ({ todos, onUpdateTodo, onDeleteTodo }) => {
   const { t } = useTranslations();
   if (todos.length === 0) {
-    return <p className="text-gray-600">{t('noPersonalTodosMessage')@/p>;
+    return <p className="text-gray-600">{t('noPersonalTodosMessage')}</p>;
   }
 
   return (
@@ -23,9 +23,9 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onUpdateTodo, onDeleteTodo }
           todo={todo} 
           onToggleComplete={() => onUpdateTodo({...todo, completed: !todo.completed})}
           onDelete={() => onDeleteTodo(todo.id)}
-      @/>
+        />
       ))}
-   @/div>
+    </div>
   );
 };
 
