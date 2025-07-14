@@ -4,9 +4,6 @@ import { useAppContext } from '@/contexts/AppContext';
 import { useTranslations } from '@/hooks/useTranslations';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import Textarea from '@/components/ui/Textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { User } from '@/types';
 import { storage, auth, db } from '@/firebase';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { updateProfile } from 'firebase/auth';
@@ -92,11 +89,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ onClose }) => {
         });
         
         addNotification({
-            id: `profile-updated-${Date.now()}`,
             messageKey: 'profileUpdatedSuccessfully',
             type: 'success',
-            timestamp: Date.now(),
-            read: false,
           });
         onClose();
 

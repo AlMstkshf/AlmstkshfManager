@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
-import { Task, Todo, TaskStatus, Project } from '@/types';
+import { Task, Todo, TaskStatus } from '@/types';
 import TaskList from '@/components/tasks/TaskList';
 import TodoList from '@/components/todos/TodoList';
 import TodoForm from '@/components/todos/TodoForm';
@@ -9,7 +9,6 @@ import Modal from '@/components/ui/Modal';
 import TaskForm from '@/components/tasks/TaskForm';
 import { useTranslations } from '@/hooks/useTranslations';
 import Button from '@/components/ui/Button'; 
-import { useNavigate } from 'react-router-dom'; 
 
 const ArrowPathIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-5 h-5"}>
@@ -32,7 +31,6 @@ const MyTasksPage: React.FC = () => {
     addNotification,
   } = useAppContext();
   const { t } = useTranslations();
-  const navigate = useNavigate();
   
   const [assignedTasks, setAssignedTasks] = useState<Task[]>([]);
   const [personalTodos, setPersonalTodos] = useState<Todo[]>([]);
@@ -57,11 +55,7 @@ const MyTasksPage: React.FC = () => {
     const task = assignedTasks.find(t => t.id === taskId);
     if (task) {
       const oldStatus = task.status;
-      let updatedTaskData: Task = { ...task, status };
-
-      if (status === TaskStatus.InProgress && oldStatus !== TaskStatus.InProgress && !task.startDate) {
-        updatedTaskData.startDate = new Date().toISOString().split('T')[0];
-      }
+      const updatedTaskData: Task = { ...task, status };
       
       updateTask(updatedTaskData);
       
@@ -110,9 +104,10 @@ const MyTasksPage: React.FC = () => {
 
   const handleStartNextTask = () => {
     if (promptNextTask) {
-      updateTask({ ...promptNextTask, status: TaskStatus.InProgress, startDate: new Date().toISOString().split('T')[0] });
+      const updatedTask = { ...promptNextTask, status: TaskStatus.InProgress };
+      updateTask(updatedTask);
       addNotification({ messageKey: 'notificationTaskStatusChanged', messageParams: { taskName: promptNextTask.name, status: t('taskStatusInProgress') }, type: 'info'});
-      setAssignedTasks(prev => prev.map(t => t.id === promptNextTask.id ? { ...t, status: TaskStatus.InProgress, startDate: new Date().toISOString().split('T')[0] } : t));
+      setAssignedTasks(prev => prev.map(t => t.id === promptNextTask.id ? updatedTask : t));
       setPromptNextTask(null);
     }
   };

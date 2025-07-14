@@ -121,7 +121,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE as Language);
 
     const [projects, setProjects] = useState<Project[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -327,7 +327,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             ...data,
             timestamp: serverTimestamp(),
             organizationId: currentUser.organizationId,
-            actionType,
+            action: actionType,
         };
         await addDoc(collection(db, 'activityLogs'), newLog);
     };
@@ -545,7 +545,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             addProject, updateProject, deleteProject, archiveProject, addTask, updateTask, deleteTask, addTodo, updateTodo, deleteTodo, updateUser, deleteUser, updateOrganization, addTaskComment, saveProjectIdea, removeSavedIdea, isIdeaSaved,
             addNotification, markNotificationAsRead, clearNotifications,
             isTourOpen, tourSteps, currentTourStepIndex, startTour, finishTour, nextTourStep, prevTourStep,
-            setLanguage, logActivity, canCurrentUserManageUsers, isCurrentUserAdmin, canCurrentUserEditTask, canCurrentUserDeleteTask, generateProjectInsights, generateMeetingAgenda, generateProjectIdeas
+            setLanguage: (lang: Language) => setLanguage(lang), logActivity, canCurrentUserManageUsers, isCurrentUserAdmin, canCurrentUserEditTask, canCurrentUserDeleteTask, generateProjectInsights, generateMeetingAgenda, generateProjectIdeas
         }}>
             {children}
         </AppContext.Provider>

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useAppContext } from '@/contexts/AppContext';
-import { ProjectIdea, TaskPriority } from '@/types';
+import { ProjectIdea } from '@/types';
 import Modal from '@/components/ui/Modal';
 import ProjectForm from '@/components/projects/ProjectForm';
 import TaskForm from '@/components/tasks/TaskForm';
 import { generateId } from '@/utils/helpers';
 import Button from '@/components/ui/Button';
 import Textarea from '@/components/ui/Textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { Select } from '@/components/ui/Select';
 
 const SaveIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>;
 const ClipboardIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM10.5 16.5c0 .621.504 1.125 1.125 1.125h1.5c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-1.5c-.621 0-1.125.504-1.125-1.125V10.5" /></svg>;
@@ -54,7 +54,7 @@ const ProjectIdeasPage: React.FC = () => {
 
     try {
       const ideas = await generateProjectIdeas(topic);
-      if (Array.isArray(ideas) && ideas.every(item => item.name && item.description && Array.isArray(item.features))) {
+      if (Array.isArray(ideas) && ideas.every(item => item.title && item.description && Array.isArray(item.requiredSkills))) {
         setGeneratedIdeas(ideas.map(idea => ({ ...idea, id: generateId(), organizationId: currentUser.organizationId })));
         if (ideas.length === 0) {
           setError(t('projectIdeaGeneratorNoIdeas'));
@@ -76,17 +76,17 @@ const ProjectIdeasPage: React.FC = () => {
 
   const handleRemoveSavedIdea = (ideaId: string) => {
     const idea = savedIdeas.find(i => i.id === ideaId);
-    if (idea && window.confirm(t('confirmRemoveSavedIdea', { ideaName: idea.name }))) {
+    if (idea && window.confirm(t('confirmRemoveSavedIdea', { ideaName: idea.title }))) {
         removeSavedIdea(ideaId);
     }
   };
 
   const handleCopyIdea = (idea: ProjectIdea) => {
-    const featuresString = idea.features.map(f => `- ${f}`).join('\n');
-    const ideaText = `${t('ideaName')}: ${idea.name}\n${t('ideaDescription')}: ${idea.description}\n${t('ideaFeatures')}:\n${featuresString}`;
+    const featuresString = idea.requiredSkills.map(f => `- ${f}`).join('\n');
+    const ideaText = `${t('ideaName')}: ${idea.title}\n${t('ideaDescription')}: ${idea.description}\n${t('ideaFeatures')}:\n${featuresString}`;
     navigator.clipboard.writeText(ideaText).then(() => {
       if ('id' in idea) setCopiedIdeaId(idea.id!);
-      addNotification({messageKey: 'notificationIdeaCopied', messageParams: {ideaName: idea.name}, type: 'info'});
+      addNotification({messageKey: 'notificationIdeaCopied', messageParams: {ideaName: idea.title}, type: 'info'});
       setTimeout(() => setCopiedIdeaId(null), 2000);
     }).catch(err => console.error('Failed to copy idea:', err));
   };
@@ -112,13 +112,13 @@ const ProjectIdeasPage: React.FC = () => {
 
   const renderIdeaCard = (idea: ProjectIdea, isSavedContext: boolean) => (
     <div key={idea.id} className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-secondary hover:shadow-xl transition-shadow duration-200">
-      <h2 className="text-xl font-semibold text-secondary mb-2">{idea.name}</h2>
+      <h2 className="text-xl font-semibold text-secondary mb-2">{idea.title}</h2>
       <p className="text-gray-700 mb-3 text-sm whitespace-pre-line">{idea.description}</p>
-      {idea.features && idea.features.length > 0 && (
+      {idea.requiredSkills && idea.requiredSkills.length > 0 && (
         <div className="mb-3">
           <h3 className="text-md font-medium text-gray-800 mb-1">{t('ideaFeatures')}</h3>
           <ul className="list-disc list-inside text-sm text-gray-600 space-y-1 pl-4 rtl:pr-4 rtl:pl-0">
-            {idea.features.map((feature, fIndex) => (
+            {idea.requiredSkills.map((feature, fIndex) => (
               <li key={fIndex}>{feature}</li>
             ))}
           </ul>
@@ -236,10 +236,12 @@ const ProjectIdeasPage: React.FC = () => {
               setIdeaForProject(null);
             }}
             projectToEdit={{
-                name: ideaForProject.name,
+                name: ideaForProject.title,
                 description: ideaForProject.description,
-                startDate: new Date().toISOString().split('T')[0],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
                 organizationId: currentUser.organizationId,
+                color: 'blue'
             }}
           />
         </Modal>
@@ -256,13 +258,9 @@ const ProjectIdeasPage: React.FC = () => {
         >
             {userActiveProjects.length > 0 ? (
                 <>
-                <Select onValueChange={setSelectedProjectIdForTask} value={selectedProjectIdForTask}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder={t('selectProjectLabel')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userActiveProjects.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                  </SelectContent>
+                <Select onChange={(e) => setSelectedProjectIdForTask(e.target.value)} value={selectedProjectIdForTask}>
+                  <option value="" disabled>{t('selectProjectLabel')}</option>
+                  {userActiveProjects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </Select>
                 <div className="flex justify-end space-x-2 rtl:space-x-reverse mt-4">
                     <Button variant="ghost" onClick={() => {
@@ -309,14 +307,12 @@ const ProjectIdeasPage: React.FC = () => {
             }}
             projectId={selectedProjectIdForTask}
             initialTaskData={{
-                name: ideaForTask.name,
-                description: `${t('ideaDescription')}: ${ideaForTask.description}\n\n${t('ideaFeatures')}:\n- ${ideaForTask.features.join('\n- ')}`,
-                priority: TaskPriority.Medium
+                name: ideaForTask.title,
+                description: `${t('ideaDescription')}: ${ideaForTask.description}\n\n${t('ideaFeatures')}:\n- ${ideaForTask.requiredSkills.join('\n- ')}`,
             }}
-        />
+          />
         </Modal>
       )}
-
     </div>
   );
 };

@@ -41,7 +41,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
       // @ts-ignore
       setEndDate(projectToEdit.endDate || '');
       setBudget(projectToEdit.budget || '');
-      setColor(projectToGedit.color || PROJECT_COLORS[0].value);
+      setColor(projectToEdit.color || PROJECT_COLORS[0].value);
     } else {
       setName('');
       setDescription('');
@@ -63,12 +63,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
       endDate: endDate || undefined,
       budget: budget ? Number(budget) : undefined,
       color,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     if (isEditing && projectToEdit && 'id' in projectToEdit) {
       updateProject({ ...(projectToEdit as Project), ...projectDataPayload });
     } else {
-      addProject(projectDataPayload as Omit<Project, 'id' | 'organizationId' | 'ownerId'>);
+      addProject(projectDataPayload);
     }
     onClose();
   };

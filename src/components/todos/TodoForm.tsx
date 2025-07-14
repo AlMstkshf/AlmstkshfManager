@@ -16,7 +16,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-    addTodo({ text, completed: false });
+    addTodo({ text, completed: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
     setText('');
     if (onTodoAdded) onTodoAdded();
   };

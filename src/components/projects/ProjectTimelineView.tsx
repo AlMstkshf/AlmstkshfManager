@@ -36,7 +36,7 @@ const ProjectTimelineView: React.FC<ProjectTimelineViewProps> = ({ tasks, users 
       <h3 className="text-xl font-semibold text-gray-800 mb-6">{t('timelineViewTitle')}</h3>
       <div className="space-y-4">
         {sortedTasks.map(task => {
-          const statusColor = getTaskSbuatusColor(task.status).split(' ')[0];
+          const statusColor = getTaskStatusColor(task.status).split(' ')[0];
           const dependentTask = task.dependsOnTaskId ? sortedTasks.find(dep => dep.id === task.dependsOnTaskId) : null;
 
           return (

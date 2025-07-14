@@ -13,7 +13,7 @@ import { useTranslations } from '@/hooks/useTranslations';
 import { TaskPriority, TaskStatus, MeetingAgenda, Task, ProjectInsightItem, Permission } from '@/types';
 import { isDueWithinHours, formatDate } from '@/utils/helpers'; 
 import { generateMeetingAgenda as generateMeetingAgendaFunction } from '@/firebase';
-import { PlusIcon, ArchiveBoxIcon, EyeIcon, FolderOpenIcon, ClipboardListIcon, LightBulbIcon, UserGroupIcon } from '@/components/ui/Icons';
+import { PlusIcon, ArchiveBoxIcon, EyeIcon, FolderOpenIcon, ClipboardListIcon, LightBulbIcon, UserGroupIconDashboard } from '@/components/ui/Icons';
 
 interface UrgentTaskView extends Task {
   projectName: string;
@@ -238,7 +238,7 @@ const DashboardPage: React.FC = () => {
                 title={t('dashboardUserManagementCardTitle')}
                 description={t('dashboardUserManagementCardDesc')}
                 linkTo="/user-management"
-                icon={<UserGroupIcon />}
+                icon={<UserGroupIconDashboard />}
                 buttonText={t('dashboardUserManagementCardButton')}
                 colorClass="bg-purple-500"
             />

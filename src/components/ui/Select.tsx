@@ -1,5 +1,5 @@
 
-import React, { SelectHTMLAttributes, ReactNode, useState } from 'react';
+import React, { SelectHTMLAttributes, ReactNode } from 'react';
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;

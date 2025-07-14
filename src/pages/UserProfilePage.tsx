@@ -8,8 +8,6 @@ import EditProfileForm from '@/components/users/EditProfileForm';
 import ProjectList from '@/components/projects/ProjectList';
 import TaskList from '@/components/tasks/TaskList';
 import { Task, Project, TaskStatus, User, ActivityActionType, Permission } from '@/types';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { formatRelativeTime } from '@/utils/helpers';
 
 const UserEditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>;
@@ -63,7 +61,6 @@ const UserProfilePage: React.FC = () => {
     organizations,
   } = useAppContext();
   const { t } = useTranslations();
-  const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const organization = useMemo(() => {
@@ -140,7 +137,7 @@ const UserProfilePage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 space-y-8">
-        <Card>
+        <div>
             <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
                 {currentUser.photoURL ? (
                   <img src={currentUser.photoURL} alt={currentUser.name} className="w-24 h-24 rounded-full object-cover mb-4 md:mb-0 md:mr-6 rtl:md:mr-0 rtl:md:ml-6 flex-shrink-0 shadow-lg" />
@@ -168,7 +165,7 @@ const UserProfilePage: React.FC = () => {
                     </Button>
                 </div>
             </div>
-        </Card>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard title={t('projectsOwnedStat')} value={projectsOwned.length} icon={<ProjectIcon />} />
@@ -177,12 +174,12 @@ const UserProfilePage: React.FC = () => {
           <StatCard title={t('tasksInProgressStat')} value={tasksInProgress} icon={<ClockIcon />} />
         </div>
       
-        <Card title={t('myProfileActivityTitle')}>
+        <div>
             {userActivity.length > 0 ? (
                 <ul className="divide-y divide-gray-200">
                     {userActivity.map(log => (
                         <li key={log.id} className="py-3 flex items-center space-x-4 rtl:space-x-reverse">
-                            <ActivityIcon action={log.actionType} />
+                            <ActivityIcon action={log.action} />
                             <div className="flex-1">
                                 <p className="text-sm text-gray-800">{log.details}</p>
                                 <p className="text-xs text-gray-500">{formatRelativeTime(log.timestamp)}</p>
@@ -193,17 +190,17 @@ const UserProfilePage: React.FC = () => {
             ) : (
                 <p className="text-gray-500 text-center py-4">{t('myProfileNoActivity')}</p>
             )}
-        </Card>
+        </div>
 
-        <Card title={t('myProfileProjectsSectionTitle')}>
+        <div>
             {projectsOwned.length > 0 ? (
                 <ProjectList projects={projectsOwned} />
             ) : (
                 <p className="text-gray-500 text-center py-4">{t('noProjectsYet')}</p>
             )}
-        </Card>
+        </div>
         
-        <Card title={t('myProfileTasksSectionTitle')}>
+        <div>
             {tasksAssigned.length > 0 ? (
                 <div className="p-1">
                     <TaskList
@@ -218,7 +215,7 @@ const UserProfilePage: React.FC = () => {
             ) : (
                 <p className="text-gray-500 text-center py-4">{t('noTasksAssigned')}</p>
             )}
-        </Card>
+        </div>
 
         <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={t('editProfileModalTitle')}>
             <EditProfileForm onClose={() => setIsEditModalOpen(false)} />

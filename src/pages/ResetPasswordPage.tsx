@@ -5,7 +5,6 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useTranslations } from '@/hooks/useTranslations';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { auth } from '@/firebase';
 import { confirmPasswordReset } from 'firebase/auth';
 

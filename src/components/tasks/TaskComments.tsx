@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
-import { TaskComment, User, TaskCommentSentiment } from '@/types';
+import { User, TaskCommentSentiment } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';

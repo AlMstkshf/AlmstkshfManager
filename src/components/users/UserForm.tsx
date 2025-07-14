@@ -4,7 +4,6 @@ import { useAppContext } from '@/contexts/AppContext';
 import { useTranslations } from '@/hooks/useTranslations';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import Checkbox from '@/components/ui/Checkbox';
 import { User, UserPermissions, Permission, TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from '@/types';
 import { adminInviteUser } from '@/firebase';

@@ -2,7 +2,6 @@
 import React from 'react';
 import { Project, Task, TaskStatus, User } from '@/types';
 import { useTranslations } from '@/hooks/useTranslations';
-import { UserGroupIconDashboard } from '../ui/Icons';
 
 interface DashboardAnalyticsProps {
   projects: Project[]; 

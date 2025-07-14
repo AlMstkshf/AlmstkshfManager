@@ -5,7 +5,7 @@ import { useAppContext } from '@/contexts/AppContext';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { Select } from '@/components/ui/Select';
 import { useTranslations } from '@/hooks/useTranslations';
 import { LocaleKey } from '@/locales';
 
@@ -122,15 +122,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="taskAssignee" className="block text-sm font-medium text-gray-700">{t('assigneeOptional')}</label>
-          <Select onValueChange={setAssigneeId} value={assigneeId}>
-            <SelectTrigger id="taskAssignee">
-              <SelectValue placeholder={t('unassigned')} />
-            </SelectTrigger>
-            <SelectContent>
+          <Select onChange={(e: any) => setAssigneeId(e.target.value)} value={assigneeId}>
+            <option value="">{t('unassigned')}</option>
               {users.map(user => (
-                <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                <option key={user.id} value={user.id}>{user.name}</option>
               ))}
-            </SelectContent>
           </Select>
         </div>
         <div>
@@ -145,39 +141,25 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="taskPriority" className="block text-sm font-medium text-gray-700">{t('priority')}</label>
-          <Select onValueChange={setPriority} value={priority}>
-            <SelectTrigger id="taskPriority">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(TaskPriority).map(p => <SelectItem key={p} value={p}>{t(taskPriorityMap[p])}</SelectItem>)}
-            </SelectContent>
+          <Select onChange={(e: any) => setPriority(e.target.value)} value={priority}>
+            {Object.values(TaskPriority).map(p => <option key={p} value={p}>{t(taskPriorityMap[p])}</option>)}
           </Select>
         </div>
         <div>
           <label htmlFor="taskStatus" className="block text-sm font-medium text-gray-700">{t('status')}</label>
-          <Select onValueChange={setStatus} value={status}>
-            <SelectTrigger id="taskStatus">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(TaskStatus).map(s => <SelectItem key={s} value={s}>{t(taskStatusMap[s])}</SelectItem>)}
-            </SelectContent>
+          <Select onChange={(e: any) => setStatus(e.target.value)} value={status}>
+            {Object.values(TaskStatus).map(s => <option key={s} value={s}>{t(taskStatusMap[s])}</option>)}
           </Select>
         </div>
       </div>
 
       <div>
         <label htmlFor="taskDependsOn" className="block text-sm font-medium text-gray-700">{t('taskDependsOn')}</label>
-        <Select onValueChange={setDependsOnTaskId} value={dependsOnTaskId}>
-          <SelectTrigger id="taskDependsOn">
-            <SelectValue placeholder={t('noDescription')} />
-          </SelectTrigger>
-          <SelectContent>
+        <Select onChange={(e: any) => setDependsOnTaskId(e.target.value)} value={dependsOnTaskId}>
+            <option value="">{t('noDependency')}</option>
             {availableTasksForDependency.map(task => (
-              <SelectItem key={task.id} value={task.id}>{task.name}</SelectItem>
+              <option key={task.id} value={task.id}>{task.name}</option>
             ))}
-          </eSelectContent>
         </Select>
       </div>
 
