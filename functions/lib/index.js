@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateProjectInsights = exports.generateMeetingAgenda = exports.analyzeTaskComment = exports.generateProjectIdeas = exports.onUserDocumentWrite = exports.deleteUserByAdmin = exports.completeInvitedUserSetup = exports.adminInviteUser = exports.signUpUser = void 0;
+exports.onUserDocumentWrite = exports.deleteUserByAdmin = exports.completeInvitedUserSetup = exports.adminInviteUser = exports.signUpUser = void 0;
 const admin = __importStar(require("firebase-admin"));
 const https_1 = require("firebase-functions/v2/https");
 const firestore_1 = require("firebase-functions/v2/firestore");
@@ -343,86 +343,90 @@ const getGeminiResponse = async (prompt) => {
     if (!apiKey) {
         throw new Error("Gemini API key not found. Please set it using 'firebase functions:config:set gemini.api_key=YOUR_API_KEY'");
     }
-    const ai = new genai_1.GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-preview-04-17",
-        contents: prompt,
-        config: { responseMimeType: "application/json" },
-    });
-    let jsonStr = response.text.trim();
-    const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
-    const match = jsonStr.match(fenceRegex);
-    if (match && match[2]) {
-        jsonStr = match[2].trim();
-    }
-    return jsonStr;
+    const genAI = new genai_1.GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-preview-0514" });
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    let jsonStr = text.trim();
+    const fenceRegex = /^```(\w*)?\s*
+        ? (. *  ?  : )
+            ?  :  : , s;
+     * `` `$/s;
+  const match = jsonStr.match(fenceRegex);
+  if (match && match[2]) {
+    jsonStr = match[2].trim();
+  }
+  return jsonStr;
 };
-exports.generateProjectIdeas = (0, https_1.onCall)(async (request) => {
-    if (!request.auth) {
-        throw new https_1.HttpsError("unauthenticated", "User must be authenticated.");
-    }
-    const { prompt } = request.data;
-    if (!prompt) {
-        throw new https_1.HttpsError("invalid-argument", "Prompt is required.");
-    }
-    try {
-        const jsonResponse = await getGeminiResponse(prompt);
-        return JSON.parse(jsonResponse);
-    }
-    catch (error) {
-        logger.error("Error calling Gemini API for ideas:", error);
-        throw new https_1.HttpsError("internal", "Failed to generate ideas.", error.message);
-    }
+
+export const generateProjectIdeas = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated.");
+  }
+  const {prompt} = request.data;
+  if (!prompt) {
+    throw new HttpsError("invalid-argument", "Prompt is required.");
+  }
+  try {
+    const jsonResponse = await getGeminiResponse(prompt);
+    return JSON.parse(jsonResponse);
+  } catch (error: any) {
+    logger.error("Error calling Gemini API for ideas:", error);
+    throw new HttpsError("internal", "Failed to generate ideas.", error.message);
+  }
 });
-exports.analyzeTaskComment = (0, https_1.onCall)(async (request) => {
-    if (!request.auth) {
-        throw new https_1.HttpsError("unauthenticated", "User must be authenticated.");
-    }
-    const { prompt } = request.data;
-    if (!prompt) {
-        throw new https_1.HttpsError("invalid-argument", "Prompt is required.");
-    }
-    try {
-        const jsonResponse = await getGeminiResponse(prompt);
-        return JSON.parse(jsonResponse);
-    }
-    catch (error) {
-        logger.error("Error calling Gemini API for sentiment:", error);
-        throw new https_1.HttpsError("internal", "Failed to analyze sentiment.", error.message);
-    }
+
+export const analyzeTaskComment = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated.");
+  }
+  const {prompt} = request.data;
+  if (!prompt) {
+    throw new HttpsError("invalid-argument", "Prompt is required.");
+  }
+  try {
+    const jsonResponse = await getGeminiResponse(prompt);
+    return JSON.parse(jsonResponse);
+  } catch (error: any) {
+    logger.error("Error calling Gemini API for sentiment:", error);
+    throw new HttpsError("internal", "Failed to analyze sentiment.", error.message);
+  }
 });
-exports.generateMeetingAgenda = (0, https_1.onCall)(async (request) => {
-    if (!request.auth) {
-        throw new https_1.HttpsError("unauthenticated", "User must be authenticated.");
-    }
-    const { prompt } = request.data;
-    if (!prompt) {
-        throw new https_1.HttpsError("invalid-argument", "Prompt is required.");
-    }
-    try {
-        const jsonResponse = await getGeminiResponse(prompt);
-        return JSON.parse(jsonResponse);
-    }
-    catch (error) {
-        logger.error("Error calling Gemini API for agenda:", error);
-        throw new https_1.HttpsError("internal", "Failed to generate agenda.", error.message);
-    }
+
+export const generateMeetingAgenda = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated.");
+  }
+  const {prompt} = request.data;
+  if (!prompt) {
+    throw new HttpsError("invalid-argument", "Prompt is required.");
+  }
+  try {
+    const jsonResponse = await getGeminiResponse(prompt);
+    return JSON.parse(jsonResponse);
+  } catch (error: any) {
+    logger.error("Error calling Gemini API for agenda:", error);
+    throw new HttpsError("internal", "Failed to generate agenda.", error.message);
+  }
 });
-exports.generateProjectInsights = (0, https_1.onCall)(async (request) => {
-    if (!request.auth) {
-        throw new https_1.HttpsError("unauthenticated", "User must be authenticated.");
-    }
-    const { prompt } = request.data;
-    if (!prompt) {
-        throw new https_1.HttpsError("invalid-argument", "Prompt is required.");
-    }
-    try {
-        const jsonResponse = await getGeminiResponse(prompt);
-        return JSON.parse(jsonResponse);
-    }
-    catch (error) {
-        logger.error("Error calling Gemini API for insights:", error);
-        throw new https_1.HttpsError("internal", "Failed to generate insights.", error.message);
-    }
+
+export const generateProjectInsights = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "User must be authenticated.");
+  }
+  const {prompt} = request.data;
+  if (!prompt) {
+    throw new HttpsError("invalid-argument", "Prompt is required.");
+  }
+  try {
+    const jsonResponse = await getGeminiResponse(prompt);
+    return JSON.parse(jsonResponse);
+  } catch (error: any) {
+    logger.error("Error calling Gemini API for insights:", error);
+    throw new HttpsError("internal", "Failed to generate insights.", error.message);
+  }
 });
+    ;
+};
 //# sourceMappingURL=index.js.map

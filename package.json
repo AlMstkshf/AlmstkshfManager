@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "node deploy.cjs",
+    "deploy": "node deploy-with-token.cjs $FIREBASE_TOKEN",
     "deploy:functions": "cd functions && npm run deploy",
     "deploy:hosting": "npm run build && firebase deploy --only hosting",
     "test": "jest",

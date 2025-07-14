@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
-import {GoogleGenAI} from "@google/genai";
+import { GoogleGenerativeAI, GenerateContentResult } from "@google/genai";
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -462,15 +462,17 @@ const getGeminiResponse = async (prompt: string): Promise<string> => {
     throw new Error("Gemini API key not found. Please set it using 'firebase functions:config:set gemini.api_key=YOUR_API_KEY'");
   }
   
-  const ai = new GoogleGenAI({apiKey});
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-04-17",
-    contents: prompt,
-    config: {responseMimeType: "application/json"},
-  });
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-preview-0514"});
 
-  let jsonStr = response.text.trim();
-  const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
+  const result: GenerateContentResult = await model.generateContent(prompt);
+  const response = result.response;
+  const text = response.text();
+
+  let jsonStr = text.trim();
+  const fenceRegex = /^```(\w*)?\s*
+?(.*?)
+?\s*```$/s;
   const match = jsonStr.match(fenceRegex);
   if (match && match[2]) {
     jsonStr = match[2].trim();
