@@ -1,12 +1,30 @@
-export const DEFAULT_LANGUAGE = 'en';
+import { UserPermissions, Permission } from './types';
 
-export const PROJECT_COLORS = [
-  { name: 'Blue', value: 'blue', twClass: 'bg-blue-500', textClass: 'text-blue-500' },
-  { name: 'Green', value: 'green', twClass: 'bg-green-500', textClass: 'text-green-500' },
-  { name: 'Purple', value: 'purple', twClass: 'bg-purple-500', textClass: 'text-purple-500' },
-  { name: 'Red', value: 'red', twClass: 'bg-red-500', textClass: 'text-red-500' },
-  { name: 'Yellow', value: 'yellow', twClass: 'bg-yellow-500', textClass: 'text-yellow-500' },
-  { name: 'Indigo', value: 'indigo', twClass: 'bg-indigo-500', textClass: 'text-indigo-500' },
-  { name: 'Pink', value: 'pink', twClass: 'bg-pink-500', textClass: 'text-pink-500' },
-  { name: 'Gray', value: 'gray', twClass: 'bg-gray-500', textClass: 'text-gray-500' }
-];
+export const TEAM_MEMBER_PERMISSIONS: UserPermissions = {
+  [Permission.CREATE_TASKS]: true,
+};
+
+export const PROJECT_MANAGER_PERMISSIONS: UserPermissions = {
+  ...TEAM_MEMBER_PERMISSIONS,
+  [Permission.CREATE_PROJECTS]: true,
+  [Permission.EDIT_ALL_PROJECTS]: true,
+  [Permission.ASSIGN_USERS_TO_TASKS]: true,
+};
+
+export const ADMIN_PERMISSIONS: UserPermissions = {
+  [Permission.MANAGE_ORGANIZATION]: true,
+  [Permission.MANAGE_USERS]: true,
+  [Permission.CREATE_PROJECTS]: true,
+  [Permission.EDIT_ALL_PROJECTS]: true,
+  [Permission.DELETE_ALL_PROJECTS]: true,
+  [Permission.ARCHIVE_ALL_PROJECTS]: true,
+  [Permission.CREATE_TASKS]: true,
+  [Permission.EDIT_ALL_TASKS]: true,
+  [Permission.DELETE_ALL_TASKS]: true,
+  [Permission.ASSIGN_USERS_TO_TASKS]: true,
+  [Permission.VIEW_ACTIVITY_LOG]: true,
+  [Permission.ACCESS_DASHBOARD]: true,
+  [Permission.GENERATE_PROJECT_TIMELINE]: true,
+  [Permission.GENERATE_PROJECT_INSIGHTS]: true,
+  [Permission.GENERATE_MEETING_AGENDA]: true,
+};

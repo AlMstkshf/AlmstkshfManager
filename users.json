@@ -1,0 +1,9 @@
+{
+  "users": [
+    {
+      "email": "ceo@almstkshf.com",
+      "passwordHash": "UG@c3N3b3JkITEyMw==",
+      "salt": "dummy-salt"
+    }
+  ]
+}

@@ -1,4 +1,3 @@
-
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
@@ -11,7 +10,7 @@ import {
 admin.initializeApp();
 const db = admin.firestore();
 
-// Enums and Interfaces (assuming these are defined elsewhere and imported)
+// Enums and Interfaces
 enum UserRole {
   Admin = "admin",
   TeamMember = "team_member",
@@ -48,7 +47,7 @@ interface Invitation {
   expiresAt: admin.firestore.Timestamp;
 }
 
-// Helper function (assuming it's defined, e.g., using crypto)
+// Helper function
 function generateSecureToken(length: number): string {
   const crypto = require("crypto");
   return crypto.randomBytes(length).toString("hex");
@@ -89,8 +88,10 @@ class AuthUtils {
     allowedRoles: UserRole[]
   ): Promise<void> {
     await this.requireAuth(request);
-    const userRole = request.auth.token.role;
-    if (!allowedRoles.includes(userRole)) {
+    
+    // Get user profile to check role
+    const userProfile = await this.getUserProfile(request.auth!.uid);
+    if (!userProfile || !allowedRoles.includes(userProfile.role)) {
       throw new HttpsError(
         "permission-denied",
         `Insufficient permissions. Required: ${allowedRoles.join(", ")}`
@@ -101,6 +102,10 @@ class AuthUtils {
   static async getUserProfile(uid: string): Promise<UserProfile | null> {
     const userDoc = await db.collection("users").doc(uid).get();
     return userDoc.exists ? (userDoc.data() as UserProfile) : null;
+  }
+
+  static async setCustomClaims(uid: string, claims: Record<string, any>): Promise<void> {
+    await admin.auth().setCustomUserClaims(uid, claims);
   }
 }
 
@@ -125,7 +130,7 @@ class OrganizationUtils {
 
   static generateInviteCode(orgName: string): string {
     const prefix = orgName.substring(0, 3).toUpperCase();
-    const suffix = generateSecureToken(8);
+    const suffix = generateSecureToken(4);
     return `${prefix}-${suffix}`;
   }
 }
@@ -138,7 +143,7 @@ class InvitationUtils {
     organizationId: string,
     organizationName: string
   ): Promise<string> {
-    const token = generateSecureToken(64); // Increase token length
+    const token = generateSecureToken(32);
     const invitation: Invitation = {
       email,
       role,
@@ -147,7 +152,7 @@ class InvitationUtils {
       token,
       createdAt: admin.firestore.Timestamp.now(),
       expiresAt: admin.firestore.Timestamp.fromMillis(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
+        Date.now() + CONFIG.INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000
       ),
     };
 
@@ -177,6 +182,18 @@ class InvitationUtils {
     return invitation;
   }
 
+  static async deleteInvitation(token: string): Promise<void> {
+    const inviteQuery = await db
+      .collection("invitations")
+      .where("token", "==", token)
+      .limit(1)
+      .get();
+
+    if (!inviteQuery.empty) {
+      await inviteQuery.docs[0].ref.delete();
+    }
+  }
+
   static async cleanupExpiredInvitations(): Promise<void> {
     const expiredQuery = await db
       .collection("invitations")
@@ -196,8 +213,8 @@ export const CONFIG = {
   PASSWORD_MIN_LENGTH: 8,
   INVITATION_EXPIRY_DAYS: 7,
   INVITE_CODE_LENGTH: 8,
-  TOKEN_LENGTH: 64,
-  GEMINI_MODEL: "gemini-1.5-flash-preview-0514",
+  TOKEN_LENGTH: 32,
+  GEMINI_MODEL: "gemini-1.5-flash",
 };
 
 // --- Improved Sign-up Function ---
@@ -305,6 +322,12 @@ export const signUpUser = onCall(async (request) => {
 
   await db.collection("users").doc(newUserRecord.uid).set(userProfile);
 
+  // Set custom claims
+  await AuthUtils.setCustomClaims(newUserRecord.uid, {
+    role: userRole,
+    organizationId: userOrganizationId,
+  });
+
   return {
     uid: newUserRecord.uid,
     email: userProfile.email,
@@ -314,14 +337,96 @@ export const signUpUser = onCall(async (request) => {
   };
 });
 
+// --- Accept Invitation Function ---
+export const acceptInvitation = onCall(async (request) => {
+  const { token, password, fullName } = request.data;
+
+  if (!token || !password || !fullName) {
+    throw new HttpsError("invalid-argument", "Missing required fields.");
+  }
+
+  const passwordError = ValidationUtils.validatePassword(password);
+  if (passwordError) {
+    throw new HttpsError("invalid-argument", passwordError);
+  }
+
+  // Validate invitation
+  const invitation = await InvitationUtils.validateInvitation(token);
+
+  // Check if user already exists
+  try {
+    await admin.auth().getUserByEmail(invitation.email);
+    throw new HttpsError(
+      "already-exists",
+      "User with this email already exists."
+    );
+  } catch (error: any) {
+    if (error.code !== "auth/user-not-found") {
+      throw error;
+    }
+  }
+
+  // Create user account
+  let newUserRecord;
+  try {
+    newUserRecord = await admin.auth().createUser({
+      email: invitation.email,
+      password,
+      displayName: fullName,
+    });
+  } catch (error: any) {
+    logger.error("Error creating Firebase Auth user:", error);
+    throw new HttpsError(
+      "internal",
+      "Failed to create user account.",
+      error.message
+    );
+  }
+
+  // Create user profile
+  const userProfile: UserProfile = {
+    id: newUserRecord.uid,
+    name: fullName,
+    email: invitation.email,
+    role: invitation.role,
+    organizationId: invitation.organizationId,
+    status: UserStatus.Active,
+  };
+
+  await db.collection("users").doc(newUserRecord.uid).set(userProfile);
+
+  // Set custom claims
+  await AuthUtils.setCustomClaims(newUserRecord.uid, {
+    role: invitation.role,
+    organizationId: invitation.organizationId,
+  });
+
+  // Delete the invitation
+  await InvitationUtils.deleteInvitation(token);
+
+  return {
+    uid: newUserRecord.uid,
+    email: userProfile.email,
+    role: userProfile.role,
+    organizationId: userProfile.organizationId,
+    message: "Invitation accepted successfully.",
+  };
+});
+
 // --- Improved Admin Invite Function ---
 export const adminInviteUser = onCall(async (request) => {
   await AuthUtils.requireRole(request, [UserRole.Admin]);
 
-  const { email, fullName, role } = request.data;
-  const organizationId = request.auth.token.organizationId;
+  const { email, role } = request.data;
+  const userProfile = await AuthUtils.getUserProfile(request.auth!.uid);
+  
+  if (!userProfile) {
+    throw new HttpsError("not-found", "User profile not found.");
+  }
 
-  if (!email || !fullName || !role) {
+  const organizationId = userProfile.organizationId;
+
+  if (!email || !role) {
     throw new HttpsError("invalid-argument", "Missing required fields.");
   }
 
@@ -400,19 +505,15 @@ export const cleanupExpiredInvitations = onSchedule(
   }
 );
 
-// --- Corrected Gemini Integration ---
-const getGeminiResponse = async (prompt: string): Promise<string> => {
-  // Get API key from Firebase Functions config
-  const apiKey = process.env.FUNCTIONS_EMULATOR
-    ? process.env.API_KEY // Use local .env in emulator
-    : process.env.FIREBASE_CONFIG
-    ? JSON.parse(process.env.FIREBASE_CONFIG).gemini.api_key // Parse from FIREBASE_CONFIG
-    : null; // Fallback
+// --- Fixed Gemini Integration ---
+const getGeminiResponse = async (prompt: string): Promise<any> => {
+  // Improved API key retrieval
+  const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
     throw new HttpsError(
       "failed-precondition",
-      "Gemini API key not found. Please set it using 'firebase functions:config:set gemini.api_key=YOUR_API_KEY'"
+      "Gemini API key not configured. Please set GEMINI_API_KEY environment variable."
     );
   }
 
@@ -427,18 +528,24 @@ const getGeminiResponse = async (prompt: string): Promise<string> => {
     const text = response.text();
 
     let jsonStr = text.trim();
-    // Fixed regex - all on one line
-    const fenceRegex = /^```(\w*)?\s*
-?(.*?)
-?\s*```$/s;
+    
+    // Fixed regex pattern for code fences
+    const fenceRegex = /^```(?:\w+)?\s*\n?([\s\S]*?)\n?\s*```$/;
     const match = jsonStr.match(fenceRegex);
-    if (match && match[2]) {
-      jsonStr = match[2].trim();
+    
+    if (match && match[1]) {
+      jsonStr = match[1].trim();
     }
-    return JSON.parse(jsonStr);
+
+    try {
+      return JSON.parse(jsonStr);
+    } catch (parseError) {
+      // If JSON parsing fails, return the raw text
+      logger.warn("Failed to parse JSON response from Gemini:", parseError);
+      return { content: jsonStr };
+    }
   } catch (error: any) {
     logger.error("Gemini API error:", error);
-    // It's better to throw a generic error to the client
     throw new HttpsError(
       "internal",
       "AI service temporarily unavailable. Please try again later."
@@ -461,10 +568,57 @@ export const generateAIContent = onCall(async (request) => {
   }
 
   try {
-    return await getGeminiResponse(prompt);
+    const response = await getGeminiResponse(prompt);
+    return {
+      type,
+      content: response,
+      timestamp: admin.firestore.Timestamp.now(),
+    };
   } catch (error: any) {
     logger.error(`Error generating ${type} content:`, error);
-    // Re-throw the error to be caught by the client
     throw error;
   }
+});
+
+// --- Get Organization Info ---
+export const getOrganization = onCall(async (request) => {
+  await AuthUtils.requireAuth(request);
+
+  const userProfile = await AuthUtils.getUserProfile(request.auth!.uid);
+  if (!userProfile) {
+    throw new HttpsError("not-found", "User profile not found.");
+  }
+
+  const organization = await OrganizationUtils.getOrganizationById(
+    userProfile.organizationId
+  );
+  
+  if (!organization) {
+    throw new HttpsError("not-found", "Organization not found.");
+  }
+
+  return organization;
+});
+
+// --- Get Organization Members ---
+export const getOrganizationMembers = onCall(async (request) => {
+  await AuthUtils.requireAuth(request);
+
+  const userProfile = await AuthUtils.getUserProfile(request.auth!.uid);
+  if (!userProfile) {
+    throw new HttpsError("not-found", "User profile not found.");
+  }
+
+  const membersQuery = await db
+    .collection("users")
+    .where("organizationId", "==", userProfile.organizationId)
+    .where("status", "==", UserStatus.Active)
+    .get();
+
+  const members = membersQuery.docs.map(doc => doc.data() as UserProfile);
+  
+  return {
+    members,
+    total: members.length,
+  };
 });

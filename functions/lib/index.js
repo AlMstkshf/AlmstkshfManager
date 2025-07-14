@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cleanupExpiredInvitations = exports.adminInviteUser = exports.signUpUser = exports.CONFIG = void 0;
+exports.getOrganizationMembers = exports.getOrganization = exports.generateAIContent = exports.cleanupExpiredInvitations = exports.adminInviteUser = exports.acceptInvitation = exports.signUpUser = exports.CONFIG = void 0;
 const https_1 = require("firebase-functions/v2/https");
 const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = __importStar(require("firebase-admin"));
@@ -41,7 +41,7 @@ const logger = __importStar(require("firebase-functions/logger"));
 const generative_ai_1 = require("@google/generative-ai");
 admin.initializeApp();
 const db = admin.firestore();
-// Enums and Interfaces (assuming these are defined elsewhere and imported)
+// Enums and Interfaces
 var UserRole;
 (function (UserRole) {
     UserRole["Admin"] = "admin";
@@ -52,7 +52,7 @@ var UserStatus;
     UserStatus["Active"] = "active";
     UserStatus["Inactive"] = "inactive";
 })(UserStatus || (UserStatus = {}));
-// Helper function (assuming it's defined, e.g., using crypto)
+// Helper function
 function generateSecureToken(length) {
     const crypto = require("crypto");
     return crypto.randomBytes(length).toString("hex");
@@ -85,14 +85,18 @@ class AuthUtils {
     }
     static async requireRole(request, allowedRoles) {
         await this.requireAuth(request);
-        const userRole = request.auth.token.role;
-        if (!allowedRoles.includes(userRole)) {
+        // Get user profile to check role
+        const userProfile = await this.getUserProfile(request.auth.uid);
+        if (!userProfile || !allowedRoles.includes(userProfile.role)) {
             throw new https_1.HttpsError("permission-denied", `Insufficient permissions. Required: ${allowedRoles.join(", ")}`);
         }
     }
     static async getUserProfile(uid) {
         const userDoc = await db.collection("users").doc(uid).get();
         return userDoc.exists ? userDoc.data() : null;
+    }
+    static async setCustomClaims(uid, claims) {
+        await admin.auth().setCustomUserClaims(uid, claims);
     }
 }
 // utils/organization.ts
@@ -111,14 +115,14 @@ class OrganizationUtils {
     }
     static generateInviteCode(orgName) {
         const prefix = orgName.substring(0, 3).toUpperCase();
-        const suffix = generateSecureToken(8);
+        const suffix = generateSecureToken(4);
         return `${prefix}-${suffix}`;
     }
 }
 // utils/invitation.ts
 class InvitationUtils {
     static async createInvitation(email, role, organizationId, organizationName) {
-        const token = generateSecureToken(64); // Increase token length
+        const token = generateSecureToken(32);
         const invitation = {
             email,
             role,
@@ -126,7 +130,7 @@ class InvitationUtils {
             organizationName,
             token,
             createdAt: admin.firestore.Timestamp.now(),
-            expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + exports.CONFIG.INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
         };
         await db.collection("invitations").add(invitation);
         return token;
@@ -148,6 +152,16 @@ class InvitationUtils {
         }
         return invitation;
     }
+    static async deleteInvitation(token) {
+        const inviteQuery = await db
+            .collection("invitations")
+            .where("token", "==", token)
+            .limit(1)
+            .get();
+        if (!inviteQuery.empty) {
+            await inviteQuery.docs[0].ref.delete();
+        }
+    }
     static async cleanupExpiredInvitations() {
         const expiredQuery = await db
             .collection("invitations")
@@ -165,8 +179,8 @@ exports.CONFIG = {
     PASSWORD_MIN_LENGTH: 8,
     INVITATION_EXPIRY_DAYS: 7,
     INVITE_CODE_LENGTH: 8,
-    TOKEN_LENGTH: 64,
-    GEMINI_MODEL: "gemini-1.5-flash-preview-0514",
+    TOKEN_LENGTH: 32,
+    GEMINI_MODEL: "gemini-1.5-flash",
 };
 // --- Improved Sign-up Function ---
 exports.signUpUser = (0, https_1.onCall)(async (request) => {
@@ -246,6 +260,11 @@ exports.signUpUser = (0, https_1.onCall)(async (request) => {
         status: UserStatus.Active,
     };
     await db.collection("users").doc(newUserRecord.uid).set(userProfile);
+    // Set custom claims
+    await AuthUtils.setCustomClaims(newUserRecord.uid, {
+        role: userRole,
+        organizationId: userOrganizationId,
+    });
     return {
         uid: newUserRecord.uid,
         email: userProfile.email,
@@ -254,12 +273,76 @@ exports.signUpUser = (0, https_1.onCall)(async (request) => {
         message: "User signed up successfully.",
     };
 });
+// --- Accept Invitation Function ---
+exports.acceptInvitation = (0, https_1.onCall)(async (request) => {
+    const { token, password, fullName } = request.data;
+    if (!token || !password || !fullName) {
+        throw new https_1.HttpsError("invalid-argument", "Missing required fields.");
+    }
+    const passwordError = ValidationUtils.validatePassword(password);
+    if (passwordError) {
+        throw new https_1.HttpsError("invalid-argument", passwordError);
+    }
+    // Validate invitation
+    const invitation = await InvitationUtils.validateInvitation(token);
+    // Check if user already exists
+    try {
+        await admin.auth().getUserByEmail(invitation.email);
+        throw new https_1.HttpsError("already-exists", "User with this email already exists.");
+    }
+    catch (error) {
+        if (error.code !== "auth/user-not-found") {
+            throw error;
+        }
+    }
+    // Create user account
+    let newUserRecord;
+    try {
+        newUserRecord = await admin.auth().createUser({
+            email: invitation.email,
+            password,
+            displayName: fullName,
+        });
+    }
+    catch (error) {
+        logger.error("Error creating Firebase Auth user:", error);
+        throw new https_1.HttpsError("internal", "Failed to create user account.", error.message);
+    }
+    // Create user profile
+    const userProfile = {
+        id: newUserRecord.uid,
+        name: fullName,
+        email: invitation.email,
+        role: invitation.role,
+        organizationId: invitation.organizationId,
+        status: UserStatus.Active,
+    };
+    await db.collection("users").doc(newUserRecord.uid).set(userProfile);
+    // Set custom claims
+    await AuthUtils.setCustomClaims(newUserRecord.uid, {
+        role: invitation.role,
+        organizationId: invitation.organizationId,
+    });
+    // Delete the invitation
+    await InvitationUtils.deleteInvitation(token);
+    return {
+        uid: newUserRecord.uid,
+        email: userProfile.email,
+        role: userProfile.role,
+        organizationId: userProfile.organizationId,
+        message: "Invitation accepted successfully.",
+    };
+});
 // --- Improved Admin Invite Function ---
 exports.adminInviteUser = (0, https_1.onCall)(async (request) => {
     await AuthUtils.requireRole(request, [UserRole.Admin]);
-    const { email, fullName, role } = request.data;
-    const organizationId = request.auth.token.organizationId;
-    if (!email || !fullName || !role) {
+    const { email, role } = request.data;
+    const userProfile = await AuthUtils.getUserProfile(request.auth.uid);
+    if (!userProfile) {
+        throw new https_1.HttpsError("not-found", "User profile not found.");
+    }
+    const organizationId = userProfile.organizationId;
+    if (!email || !role) {
         throw new https_1.HttpsError("invalid-argument", "Missing required fields.");
     }
     if (!ValidationUtils.validateEmail(email)) {
@@ -309,16 +392,12 @@ exports.cleanupExpiredInvitations = (0, scheduler_1.onSchedule)("every 24 hours"
         logger.error("Error during invitation cleanup:", error);
     }
 });
-// --- Corrected Gemini Integration ---
+// --- Fixed Gemini Integration ---
 const getGeminiResponse = async (prompt) => {
-    // Get API key from Firebase Functions config
-    const apiKey = process.env.FUNCTIONS_EMULATOR
-        ? process.env.API_KEY // Use local .env in emulator
-        : process.env.FIREBASE_CONFIG
-            ? JSON.parse(process.env.FIREBASE_CONFIG).gemini.api_key // Parse from FIREBASE_CONFIG
-            : null; // Fallback
+    // Improved API key retrieval
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-        throw new https_1.HttpsError("failed-precondition", "Gemini API key not found. Please set it using 'firebase functions:config:set gemini.api_key=YOUR_API_KEY'");
+        throw new https_1.HttpsError("failed-precondition", "Gemini API key not configured. Please set GEMINI_API_KEY environment variable.");
     }
     const genAI = new generative_ai_1.GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
@@ -329,56 +408,79 @@ const getGeminiResponse = async (prompt) => {
         const response = result.response;
         const text = response.text();
         let jsonStr = text.trim();
-        // Fixed regex - all on one line
-        const fenceRegex = /^```(\w*)?\s*
-            ? (. *  ?  : )
-                ?  :  : , s;
-         * `` `$/s;
-    const match = jsonStr.match(fenceRegex);
-    if (match && match[2]) {
-      jsonStr = match[2].trim();
-    }
-    return JSON.parse(jsonStr);
-  } catch (error: any) {
-    logger.error("Gemini API error:", error);
-    // It's better to throw a generic error to the client
-    throw new HttpsError(
-      "internal",
-      "AI service temporarily unavailable. Please try again later."
-    );
-  }
-};
-
-// --- Consolidated Gemini Functions ---
-export const generateAIContent = onCall(async (request) => {
-  await AuthUtils.requireAuth(request);
-
-  const { prompt, type } = request.data;
-  if (!prompt || !type) {
-    throw new HttpsError("invalid-argument", "Prompt and type are required.");
-  }
-
-  const validTypes = ["ideas", "sentiment", "agenda", "insights"];
-  if (!validTypes.includes(type)) {
-    throw new HttpsError("invalid-argument", "Invalid content type.");
-  }
-
-  try {
-    return await getGeminiResponse(prompt);
-  } catch (error: any) {
-    logger.error(`;
-        Error;
-        generating;
-        $;
-        {
-            type;
+        // Fixed regex pattern for code fences
+        const fenceRegex = /^```(?:\w+)?\s*\n?([\s\S]*?)\n?\s*```$/;
+        const match = jsonStr.match(fenceRegex);
+        if (match && match[1]) {
+            jsonStr = match[1].trim();
         }
-        content: `, error);
-    // Re-throw the error to be caught by the client
-    throw error;
-  }
-});;
+        try {
+            return JSON.parse(jsonStr);
+        }
+        catch (parseError) {
+            // If JSON parsing fails, return the raw text
+            logger.warn("Failed to parse JSON response from Gemini:", parseError);
+            return { content: jsonStr };
+        }
     }
-    finally { }
+    catch (error) {
+        logger.error("Gemini API error:", error);
+        throw new https_1.HttpsError("internal", "AI service temporarily unavailable. Please try again later.");
+    }
 };
+// --- Consolidated Gemini Functions ---
+exports.generateAIContent = (0, https_1.onCall)(async (request) => {
+    await AuthUtils.requireAuth(request);
+    const { prompt, type } = request.data;
+    if (!prompt || !type) {
+        throw new https_1.HttpsError("invalid-argument", "Prompt and type are required.");
+    }
+    const validTypes = ["ideas", "sentiment", "agenda", "insights"];
+    if (!validTypes.includes(type)) {
+        throw new https_1.HttpsError("invalid-argument", "Invalid content type.");
+    }
+    try {
+        const response = await getGeminiResponse(prompt);
+        return {
+            type,
+            content: response,
+            timestamp: admin.firestore.Timestamp.now(),
+        };
+    }
+    catch (error) {
+        logger.error(`Error generating ${type} content:`, error);
+        throw error;
+    }
+});
+// --- Get Organization Info ---
+exports.getOrganization = (0, https_1.onCall)(async (request) => {
+    await AuthUtils.requireAuth(request);
+    const userProfile = await AuthUtils.getUserProfile(request.auth.uid);
+    if (!userProfile) {
+        throw new https_1.HttpsError("not-found", "User profile not found.");
+    }
+    const organization = await OrganizationUtils.getOrganizationById(userProfile.organizationId);
+    if (!organization) {
+        throw new https_1.HttpsError("not-found", "Organization not found.");
+    }
+    return organization;
+});
+// --- Get Organization Members ---
+exports.getOrganizationMembers = (0, https_1.onCall)(async (request) => {
+    await AuthUtils.requireAuth(request);
+    const userProfile = await AuthUtils.getUserProfile(request.auth.uid);
+    if (!userProfile) {
+        throw new https_1.HttpsError("not-found", "User profile not found.");
+    }
+    const membersQuery = await db
+        .collection("users")
+        .where("organizationId", "==", userProfile.organizationId)
+        .where("status", "==", UserStatus.Active)
+        .get();
+    const members = membersQuery.docs.map(doc => doc.data());
+    return {
+        members,
+        total: members.length,
+    };
+});
 //# sourceMappingURL=index.js.map
