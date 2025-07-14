@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTranslations } from '@/hooks/useTranslations';
 import { useAppContext } from '@/contexts/AppContext';
@@ -83,12 +82,8 @@ const ProjectIdeasPage: React.FC = () => {
   };
 
   const handleCopyIdea = (idea: ProjectIdea) => {
-    const featuresString = idea.features.map(f => `- ${f}`).join('
-');
-    const ideaText = `${t('ideaName')}: ${idea.name}
-${t('ideaDescription')}: ${idea.description}
-${t('ideaFeatures')}:
-${featuresString}`;
+    const featuresString = idea.features.map(f => `- ${f}`).join('\n');
+    const ideaText = `${t('ideaName')}: ${idea.name}\n${t('ideaDescription')}: ${idea.description}\n${t('ideaFeatures')}:\n${featuresString}`;
     navigator.clipboard.writeText(ideaText).then(() => {
       if ('id' in idea) setCopiedIdeaId(idea.id!);
       addNotification({messageKey: 'notificationIdeaCopied', messageParams: {ideaName: idea.name}, type: 'info'});
@@ -101,12 +96,10 @@ ${featuresString}`;
     setIsProjectFormModalOpen(true);
   };
 
-
   const handleAddIdeaAsTask = (idea: ProjectIdea) => {
     setIdeaForTask(idea);
     setIsSelectProjectModalOpen(true);
   };
-
 
   const handleProjectSelectedForTask = (projectId: string) => {
     if (!projectId) return;
@@ -116,7 +109,6 @@ ${featuresString}`;
   };
   
   const userActiveProjects = getActiveProjects();
-
 
   const renderIdeaCard = (idea: ProjectIdea, isSavedContext: boolean) => (
     <div key={idea.id} className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-secondary hover:shadow-xl transition-shadow duration-200">
@@ -318,11 +310,7 @@ ${featuresString}`;
             projectId={selectedProjectIdForTask}
             initialTaskData={{
                 name: ideaForTask.name,
-                description: `${t('ideaDescription')}: ${ideaForTask.description}
-
-${t('ideaFeatures')}:
-- ${ideaForTask.features.join('
-- ')}`,
+                description: `${t('ideaDescription')}: ${ideaForTask.description}\n\n${t('ideaFeatures')}:\n- ${ideaForTask.features.join('\n- ')}`,
                 priority: TaskPriority.Medium
             }}
         />
