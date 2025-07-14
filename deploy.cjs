@@ -1,6 +1,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
 
 // Colors for console output
 const colors = {
@@ -25,18 +26,8 @@ function runCommand(command, message) {
 }
 
 const rootDir = path.resolve(__dirname);
-const envLocalPath = path.join(rootDir, '.env.local');
 const functionsEnvPath = path.join(rootDir, 'functions', '.env');
 
-console.log(`Checking for .env.local at: ${envLocalPath}`);
-// Check if .env.local exists
-if (!fs.existsSync(envLocalPath)) {
-  console.error(`${colors.red}Error: .env.local file not found.${colors.reset}`);
-  console.error(`Please create a .env.local file with your Firebase configuration.`);
-  process.exit(1);
-}
-
-console.log(`Checking for functions/.env at: ${functionsEnvPath}`);
 // Check if functions/.env exists
 if (!fs.existsSync(functionsEnvPath)) {
   console.error(`${colors.red}Error: functions/.env file not found.${colors.reset}`);
@@ -64,7 +55,13 @@ async function deploy() {
   }
   
   // Deploy to Firebase
-  if (!runCommand('firebase deploy', 'Deploying to Firebase...')) {
+  const firebaseToken = process.env.FIREBASE_TOKEN;
+  if (!firebaseToken) {
+    console.error(`${colors.red}Error: FIREBASE_TOKEN not found in .env.local.${colors.reset}`);
+    process.exit(1);
+  }
+
+  if (!runCommand(`firebase deploy --token "${firebaseToken}"`, 'Deploying to Firebase...')) {
     process.exit(1);
   }
   
