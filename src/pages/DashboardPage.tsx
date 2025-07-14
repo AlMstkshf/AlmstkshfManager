@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { useAppContext } from '@/contexts/AppContext';
 import ProjectForm from '@/components/projects/ProjectForm';
@@ -9,13 +9,11 @@ import DashboardAnalytics from '@/components/dashboard/DashboardAnalytics';
 import UrgentTasksSummary from '@/components/dashboard/UrgentTasksSummary';
 import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
 import ProjectList from '@/components/projects/ProjectList';
-import TaskList from '@/components/tasks/TaskList';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useTranslations } from '@/hooks/useTranslations';
-import { TaskPriority, TaskStatus, MeetingAgenda, User, Project, Task, ProjectInsightItem, AIInsightsResponse, Permission } from '@/types';
+import { TaskPriority, TaskStatus, MeetingAgenda, Task, ProjectInsightItem, Permission } from '@/types';
 import { isDueWithinHours, formatDate } from '@/utils/helpers'; 
 import { generateMeetingAgenda as generateMeetingAgendaFunction } from '@/firebase';
-import { PlusIcon, ArchiveBoxIcon, EyeIcon, FolderOpenIcon, ClipboardListIcon, LightBulbIcon, UserGroupIconDashboard } from '@/components/ui/Icons';
+import { PlusIcon, ArchiveBoxIcon, EyeIcon, FolderOpenIcon, ClipboardListIcon, LightBulbIcon, UserGroupIcon } from '@/components/ui/Icons';
 
 interface UrgentTaskView extends Task {
   projectName: string;
@@ -53,7 +51,6 @@ const DashboardPage: React.FC = () => {
     generateProjectInsights, 
   } = useAppContext(); 
   const { t } = useTranslations();
-  const navigate = useNavigate();
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
 
@@ -171,7 +168,7 @@ const DashboardPage: React.FC = () => {
       const result = await generateMeetingAgendaFunction({ prompt });
       const parsedData = result.data as MeetingAgenda;
 
-      if (parsedData && parsedData.agendaTitle) {
+      if (parsedData && parsedData.discussionPoints) {
         setMeetingAgenda(parsedData);
       } else {
         setAgendaError(t('agendaGenerationError') + ' (Invalid format)');
@@ -185,7 +182,7 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  const renderAgendaItem = (item: {taskName?: string, point?: string, assigneeName?: string, dueDate?: string, blockedByTaskName?:string, relatedTaskIds?: string[]}, type: 'discussion' | 'overdue' | 'blocked') => {
+  const renderAgendaItem = (item: {taskName?: string, point?: string, assigneeName?: string, dueDate?: string, blockedByTaskName?:string, relatedTaskIds?: string[]}) => {
     let content = item.point || item.taskName || 'N/A';
     const task = item.relatedTaskIds && item.relatedTaskIds.length > 0 ? tasks.find(t => t.id === item.relatedTaskIds![0]) : null;
     const project = task ? getProjectById(task.projectId) : null;
@@ -241,7 +238,7 @@ const DashboardPage: React.FC = () => {
                 title={t('dashboardUserManagementCardTitle')}
                 description={t('dashboardUserManagementCardDesc')}
                 linkTo="/user-management"
-                icon={<UserGroupIconDashboard />}
+                icon={<UserGroupIcon />}
                 buttonText={t('dashboardUserManagementCardButton')}
                 colorClass="bg-purple-500"
             />
@@ -334,7 +331,7 @@ const DashboardPage: React.FC = () => {
         <ProjectForm onClose={() => setIsProjectModalOpen(false)} />
       </Modal>
 
-      <Modal isOpen={isAgendaModalOpen} onClose={() => setIsAgendaModalOpen(false)} title={meetingAgenda?.agendaTitle || t('meetingAgendaTitle')} size="xl">
+      <Modal isOpen={isAgendaModalOpen} onClose={() => setIsAgendaModalOpen(false)} title={t('meetingAgendaTitle')} size="xl">
         {isLoadingAgenda && (
             <div className="text-center py-10">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
@@ -353,7 +350,7 @@ const DashboardPage: React.FC = () => {
                     <section>
                         <h3 className="text-lg font-semibold text-secondary mb-2 border-b pb-1">{t('agendaDiscussionPoints')}</h3>
                         <ul className="list-disc list-inside ml-4 rtl:mr-4 rtl:ml-0 space-y-1 text-sm">
-                            {meetingAgenda.discussionPoints.map(item => renderAgendaItem(item, 'discussion'))}
+                            {meetingAgenda.discussionPoints.map(item => renderAgendaItem(item))}
                         </ul>
                     </section>
                 )}
@@ -361,7 +358,7 @@ const DashboardPage: React.FC = () => {
                     <section>
                         <h3 className="text-lg font-semibold text-red-600 mb-2 border-b pb-1">{t('agendaOverdueTasksReview')}</h3>
                         <ul className="list-disc list-inside ml-4 rtl:mr-4 rtl:ml-0 space-y-1 text-sm">
-                             {meetingAgenda.overdueTasksReview.map(item => renderAgendaItem(item, 'overdue'))}
+                             {meetingAgenda.overdueTasksReview.map(item => renderAgendaItem(item))}
                         </ul>
                     </section>
                 )}
@@ -369,7 +366,7 @@ const DashboardPage: React.FC = () => {
                     <section>
                         <h3 className="text-lg font-semibold text-yellow-600 mb-2 border-b pb-1">{t('agendaBlockedTasksReview')}</h3>
                         <ul className="list-disc list-inside ml-4 rtl:mr-4 rtl:ml-0 space-y-1 text-sm">
-                            {meetingAgenda.blockedTasksReview.map(item => renderAgendaItem(item, 'blocked'))}
+                            {meetingAgenda.blockedTasksReview.map(item => renderAgendaItem(item))}
                         </ul>
                     </section>
                 )}

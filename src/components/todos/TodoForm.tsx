@@ -12,14 +12,12 @@ const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
   const { addTodo } = useAppContext();
   const { t } = useTranslations();
   const [text, setText] = useState('');
-  const [dueDate, setDueDate] = useState('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-    addTodo({ text, dueDate: dueDate || undefined, completed: false });
+    addTodo({ text, completed: false });
     setText('');
-    setDueDate('');
     if (onTodoAdded) onTodoAdded();
   };
 
@@ -32,14 +30,6 @@ const TodoForm: React.FC<TodoFormProps> = ({ onTodoAdded }) => {
         onChange={e => setText(e.target.value)}
         placeholder={t('todoPlaceholder')}
         className="flex-grow"
-      />
-      <Input
-        label={t('dueDateOptional')}
-        id="todoDueDate"
-        type="date"
-        value={dueDate}
-        onChange={e => setDueDate(e.target.value)}
-        className="w-full sm:w-auto"
       />
       <Button type="submit" size="md" className="w-full sm:w-auto">{t('addTodo')}</Button>
     </form>

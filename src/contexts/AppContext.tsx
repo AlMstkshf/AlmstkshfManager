@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { 
-  Project, Task, Todo, Notification, User, Organization, TaskStatus, TaskPriority, 
+  Project, Task, Todo, Notification, User, Organization, TaskStatus,
   Language, UserStatus, TaskComment, TaskCommentSentiment, AISentimentResponse,
-  AIInsightsResponse, ProjectInsightItem, TourStep, SavedProjectIdea,
+  AIInsightsResponse, TourStep, SavedProjectIdea,
   ActivityLog, ActivityActionType, Permission, TEAM_MEMBER_PERMISSIONS, ADMIN_PERMISSIONS,
   PROJECT_MANAGER_PERMISSIONS, MeetingAgenda
 } from '@/types';
@@ -20,7 +20,7 @@ import {
     sendPasswordResetEmail,
 } from 'firebase/auth';
 import { 
-    collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, writeBatch, getDocs, serverTimestamp, orderBy, getDoc 
+    collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, writeBatch, getDocs, serverTimestamp, getDoc 
 } from 'firebase/firestore';
 import { DEFAULT_LANGUAGE } from '@/constants';
 import { translations } from '@/locales';
@@ -205,7 +205,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 if(collectionName === 'projects') setProjects(data as Project[]);
                 if(collectionName === 'tasks') setTasks(data as Task[]);
                 if(collectionName === 'users') setUsers(data as User[]);
-                if(collectionName === 'savedIdeas') setSavedIdeas(data as ProjectIdea[]);
+                if(collectionName === 'savedIdeas') setSavedIdeas(data as SavedProjectIdea[]);
                 if(collectionName === 'activityLogs') setActivityLogs((data as ActivityLog[]).sort((a,b) => (b.timestamp as any)?.seconds - (a.timestamp as any)?.seconds));
                 if(collectionName === 'notifications') setNotifications((data as Notification[]).sort((a,b) => (b.timestamp as any)?.seconds - (a.timestamp as any)?.seconds));
                 if(collectionName === 'taskComments') setTaskComments(data as TaskComment[]);
@@ -453,12 +453,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const saveProjectIdea = async (idea: Omit<ProjectIdea, 'organizationId' | 'id'> & {id?:string}) => {
         if(!currentUser) return;
-        await addDoc(collection(db, 'savedIdeas'), {
-            name: idea.name,
-            description: idea.description,
-            features: idea.features,
-            organizationId: currentUser.organizationId
-        });
+        const newIdea = {
+            ...idea,
+            savedAt: serverTimestamp(),
+            savedBy: currentUser.id,
+            organizationId: currentUser.organizationId,
+        }
+        await addDoc(collection(db, 'savedIdeas'), newIdea);
     };
     const removeSavedIdea = async (ideaId: string) => await deleteDoc(doc(db, 'savedIdeas', ideaId));
     const isIdeaSaved = (ideaId: string) => savedIdeas.some(i => i.id === ideaId);

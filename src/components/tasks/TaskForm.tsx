@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Task, TaskStatus, TaskPriority, User, AIQuickTaskSuggestion, Project } from '@/types';
+import { Task, TaskStatus, TaskPriority, AIQuickTaskSuggestion } from '@/types';
 import { useAppContext } from '@/contexts/AppContext';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
@@ -14,10 +14,9 @@ interface TaskFormProps {
   projectId: string;
   taskToEdit?: Task;
   initialTaskData?: Partial<AIQuickTaskSuggestion>;
-  projectName?: string;
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, initialTaskData, projectName }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, initialTaskData }) => {
   const { addTask, updateTask, users, tasks: projectTasksForDependencies } = useAppContext();
   const { t } = useTranslations();
 
@@ -97,6 +96,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       status,
       dependsOnTaskId,
       projectId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     if (taskToEdit) {
@@ -121,7 +122,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="taskAssignee" className="block text-sm font-medium text-gray-700">{t('assigneeOptional')}</label>
-          <Select onValueChange={(value) => setAssigneeId(value)} value={assigneeId}>
+          <Select onValueChange={setAssigneeId} value={assigneeId}>
             <SelectTrigger id="taskAssignee">
               <SelectValue placeholder={t('unassigned')} />
             </SelectTrigger>
@@ -144,7 +145,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="taskPriority" className="block text-sm font-medium text-gray-700">{t('priority')}</label>
-          <Select onValueChange={(value: TaskPriority) => setPriority(value)} value={priority}>
+          <Select onValueChange={setPriority} value={priority}>
             <SelectTrigger id="taskPriority">
               <SelectValue />
             </SelectTrigger>
@@ -155,7 +156,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
         </div>
         <div>
           <label htmlFor="taskStatus" className="block text-sm font-medium text-gray-700">{t('status')}</label>
-          <Select onValueChange={(value: TaskStatus) => setStatus(value)} value={status}>
+          <Select onValueChange={setStatus} value={status}>
             <SelectTrigger id="taskStatus">
               <SelectValue />
             </SelectTrigger>
@@ -168,7 +169,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
 
       <div>
         <label htmlFor="taskDependsOn" className="block text-sm font-medium text-gray-700">{t('taskDependsOn')}</label>
-        <Select onValueChange={(value) => setDependsOnTaskId(value)} value={dependsOnTaskId}>
+        <Select onValueChange={setDependsOnTaskId} value={dependsOnTaskId}>
           <SelectTrigger id="taskDependsOn">
             <SelectValue placeholder={t('noDescription')} />
           </SelectTrigger>
@@ -176,7 +177,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, projectId, taskToEdit, ini
             {availableTasksForDependency.map(task => (
               <SelectItem key={task.id} value={task.id}>{task.name}</SelectItem>
             ))}
-          </SelectContent>
+          </eSelectContent>
         </Select>
       </div>
 

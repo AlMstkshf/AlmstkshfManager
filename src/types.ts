@@ -153,6 +153,9 @@ export interface ProjectInsightItem {
   description: string;
   priority: 'low' | 'medium' | 'high';
   actionable: boolean;
+  relatedProjectIds?: string[];
+  relatedTaskIds?: string[];
+  relatedUserIds?: string[];
 }
 
 export interface AIInsightsResponse {

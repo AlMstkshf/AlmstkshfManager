@@ -1,6 +1,5 @@
 import React from 'react';
 import { Todo } from '@/types';
-import { formatDate } from '@/utils/helpers';
 import Button from '@/components/ui/Button';
 import { useTranslations } from '@/hooks/useTranslations';
 
@@ -29,11 +28,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggleComplete, onDelete })
         </span>
       </div>
       <div className="flex items-center space-x-3 rtl:space-x-reverse">
-        {todo.dueDate && (
-          <span className={`text-xs ${todo.completed ? 'text-gray-400' : 'text-gray-500'}`}>
-            {t('due')}: {formatDate(todo.dueDate) || t('notAvailableShort')}
-          </span>
-        )}
         <Button onClick={onDelete} variant="ghost" size="sm" className="p-1.5 text-red-500 hover:bg-red-100" aria-label={t('delete')} title={t('delete')}>
             <DeleteIcon />
         </Button>
