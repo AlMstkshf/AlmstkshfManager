@@ -3,10 +3,25 @@ import { UserPermissions } from './types';
 export const DEFAULT_LANGUAGE = 'en';
 
 export const PROJECT_COLORS = [
-  '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
-  '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50',
-  '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800',
-  '#FF5722', '#795548', '#9E9E9E', '#607D8B'
+  { value: '#F44336', name: 'Red', twClass: 'bg-red-500' },
+  { value: '#E91E63', name: 'Pink', twClass: 'bg-pink-500' },
+  { value: '#9C27B0', name: 'Purple', twClass: 'bg-purple-500' },
+  { value: '#673AB7', name: 'Deep Purple', twClass: 'bg-deep-purple-500' },
+  { value: '#3F51B5', name: 'Indigo', twClass: 'bg-indigo-500' },
+  { value: '#2196F3', name: 'Blue', twClass: 'bg-blue-500' },
+  { value: '#03A9F4', name: 'Light Blue', twClass: 'bg-light-blue-500' },
+  { value: '#00BCD4', name: 'Cyan', twClass: 'bg-cyan-500' },
+  { value: '#009688', name: 'Teal', twClass: 'bg-teal-500' },
+  { value: '#4CAF50', name: 'Green', twClass: 'bg-green-500' },
+  { value: '#8BC34A', name: 'Light Green', twClass: 'bg-light-green-500' },
+  { value: '#CDDC39', name: 'Lime', twClass: 'bg-lime-500' },
+  { value: '#FFEB3B', name: 'Yellow', twClass: 'bg-yellow-500' },
+  { value: '#FFC107', name: 'Amber', twClass: 'bg-amber-500' },
+  { value: '#FF9800', name: 'Orange', twClass: 'bg-orange-500' },
+  { value: '#FF5722', name: 'Deep Orange', twClass: 'bg-deep-orange-500' },
+  { value: '#795548', name: 'Brown', twClass: 'bg-brown-500' },
+  { value: '#9E9E9E', name: 'Grey', twClass: 'bg-grey-500' },
+  { value: '#607D8B', name: 'Blue Grey', twClass: 'bg-blue-grey-500' },
 ];
 
 export enum Permission {

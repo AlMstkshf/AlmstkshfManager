@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Project, TaskStatus } from '@/types'; 
@@ -16,7 +15,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
   const { getTasksByProjectId } = useAppContext(); 
   const { t } = useTranslations();
 
-  const projectColorMeta = PROJECT_COLORS.find(pc => pc.value === project.color || pc.twClass === project.color);
+  const projectColorMeta = PROJECT_COLORS.find(pc => pc.value === project.color);
   const displayColor = projectColorMeta ? projectColorMeta.twClass : 'bg-gray-500';
 
   const projectTasks = getTasksByProjectId(project.id);
@@ -71,10 +70,8 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ project }) => {
 
       <div className="p-5 pt-2">
         <div className="text-xs text-gray-500 border-t border-gray-100 pt-3">
-           {/* @ts-ignore */}
-          <p>{t('startLabel')}: {formatDate(project.startDate) || t('notAvailableShort')}</p>
-           {/* @ts-ignore */}
-          {project.endDate && <p>{t('endLabel')}: {formatDate(project.endDate) || t('notAvailableShort')}</p>}
+          <p>{t('startLabel')}: {formatDate(project.createdAt) || t('notAvailableShort')}</p>
+          {project.updatedAt && <p>{t('endLabel')}: {formatDate(project.updatedAt) || t('notAvailableShort')}</p>}
           {project.budget !== undefined && project.budget !== null && <p>{t('budgetLabel')}: ${project.budget.toLocaleString()}</p>}
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '@/contexts/AppContext';
@@ -120,7 +119,7 @@ const ProjectDetailPage: React.FC = () => {
     }
     
     const owner = users.find(u => u.id === project.ownerId);
-    const projectColorMeta = PROJECT_COLORS.find(pc => pc.value === project.color || pc.twClass === project.color);
+    const projectColorMeta = PROJECT_COLORS.find(pc => pc.value === project.color);
     const displayColor = projectColorMeta ? projectColorMeta.twClass : 'bg-gray-500';
 
     const canEditProject = currentUser?.permissions[Permission.EDIT_ALL_PROJECTS] || currentUser?.id === project.ownerId;
@@ -144,10 +143,8 @@ const ProjectDetailPage: React.FC = () => {
                         <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500">
                             <span><strong>{t('status')}</strong> {project.isArchived ? t('projectArchivedBadge') : 'Active'}</span>
                             <span><strong>Owner</strong> {owner?.name || t('unknownUser')}</span>
-                             {/* @ts-ignore */}
-                            <span><strong>{t('startDate')}</strong> {formatDate(project.startDate)}</span>
-                             {/* @ts-ignore */}
-                            {project.endDate && <span><strong>{t('endDateOptional')}</strong> {formatDate(project.endDate)}</span>}
+                            <span><strong>{t('startDate')}</strong> {formatDate(project.createdAt)}</span>
+                            {project.updatedAt && <span><strong>{t('endDateOptional')}</strong> {formatDate(project.updatedAt)}</span>}
                             {project.budget && <span><strong>{t('budgetOptional')}</strong> ${project.budget.toLocaleString()}</span>}
                         </div>
                     </div>

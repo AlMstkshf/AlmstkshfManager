@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Project } from '@/types';
 import { useAppContext } from '@/contexts/AppContext';
@@ -36,9 +35,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onClose, projectToEdit }) => 
     if (projectToEdit) {
       setName(projectToEdit.name || '');
       setDescription(projectToEdit.description || '');
-      // @ts-ignore
       setStartDate(projectToEdit.startDate || new Date().toISOString().split('T')[0]);
-      // @ts-ignore
       setEndDate(projectToEdit.endDate || '');
       setBudget(projectToEdit.budget || '');
       setColor(projectToEdit.color || PROJECT_COLORS[0].value);

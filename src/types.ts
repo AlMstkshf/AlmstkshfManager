@@ -16,12 +16,24 @@ export enum Permission {
   MANAGE_USERS = 'MANAGE_USERS',
   MANAGE_PROJECTS = 'MANAGE_PROJECTS',
   VIEW_REPORTS = 'VIEW_REPORTS',
+  MANAGE_ORGANIZATION = 'MANAGE_ORGANIZATION',
+  CREATE_PROJECTS = 'CREATE_PROJECTS',
+  EDIT_ALL_PROJECTS = 'EDIT_ALL_PROJECTS',
+  DELETE_ALL_PROJECTS = 'DELETE_ALL_PROJECTS',
+  ARCHIVE_ALL_PROJECTS = 'ARCHIVE_ALL_PROJECTS',
+  CREATE_TASKS = 'CREATE_TASKS',
+  EDIT_ALL_TASKS = 'EDIT_ALL_TASKS',
+  DELETE_ALL_TASKS = 'DELETE_ALL_TASKS',
+  ASSIGN_USERS_TO_TASKS = 'ASSIGN_USERS_TO_TASKS',
+  VIEW_ACTIVITY_LOG = 'VIEW_ACTIVITY_LOG',
+  ACCESS_DASHBOARD = 'ACCESS_DASHBOARD',
+  GENERATE_PROJECT_TIMELINE = 'GENERATE_PROJECT_TIMELINE',
+  GENERATE_PROJECT_INSIGHTS = 'GENERATE_PROJECT_INSIGHTS',
+  GENERATE_MEETING_AGENDA = 'GENERATE_MEETING_AGENDA',
 }
 
 export interface UserPermissions {
-  [Permission.MANAGE_USERS]: boolean;
-  [Permission.MANAGE_PROJECTS]: boolean;
-  [Permission.VIEW_REPORTS]: boolean;
+  [key: string]: boolean;
 }
 
 export enum Language {
@@ -70,6 +82,8 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   isArchived?: boolean;
+  startDate?: string; // Added startDate
+  endDate?: string; // Added endDate
 }
 
 export type LocaleKey = string;

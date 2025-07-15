@@ -32,62 +32,15 @@ const App: React.FC = () => {
         <Route path="/set-password" element={<SetPasswordPage />} />
         <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/project-ideas"
-          element={
-            <ProtectedRoute>
-              <ProjectIdeasPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/project/:id"
-          element={
-            <ProtectedRoute>
-              <ProjectDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/my-tasks"
-          element={
-            <ProtectedRoute>
-              <MyTasksPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/guidelines"
-          element={
-            <ProtectedRoute>
-              <GuidelinesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/user-management"
-          element={
-            <ProtectedRoute>
-              <UserManagementPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <UserProfilePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/project-ideas" element={<ProjectIdeasPage />} />
+          <Route path="/project/:id" element={<ProjectDetailPage />} />
+          <Route path="/my-tasks" element={<MyTasksPage />} />
+          <Route path="/guidelines" element={<GuidelinesPage />} />
+          <Route path="/user-management" element={<UserManagementPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+        </Route>
       </Routes>
     </Layout>
   );

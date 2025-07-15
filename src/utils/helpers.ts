@@ -1,7 +1,5 @@
-
 import { UserPermissions } from '@/types';
 import { Permission } from '@/constants';
-import { TFunction } from 'i18next';
 
 export const generateId = (): string => {
   return Math.random().toString(36).substr(2, 9);
@@ -78,7 +76,7 @@ export const isDueWithinHours = (dateString?: string, hours: number = 48): boole
   }
 };
 
-export const getPermissionSummary = (permissions: UserPermissions, t: TFunction): string => {
+export const getPermissionSummary = (permissions: UserPermissions, t: any): string => {
   if (!permissions) return t('userRoleTeamMember');
   if (permissions[Permission.MANAGE_ORGANIZATION]) return t('userRoleAdmin');
   if (permissions[Permission.CREATE_PROJECTS]) return t('userRoleProjectManager');
