@@ -3,8 +3,7 @@ import {
   Project, Task, Todo, Notification, User, Organization, TaskStatus,
   Language, UserStatus, TaskComment, TaskCommentSentiment, AISentimentResponse,
   AIInsightsResponse, TourStep, SavedProjectIdea,
-  ActivityLog, ActivityActionType, Permission, TEAM_MEMBER_PERMISSIONS, ADMIN_PERMISSIONS,
-  PROJECT_MANAGER_PERMISSIONS, MeetingAgenda
+  ActivityLog, ActivityActionType, MeetingAgenda
 } from '@/types';
 import { 
     auth, db, signUpUser as signUpUserFunction, completeInvitedUserSetup as completeInvitedUserSetupFunction, 
@@ -22,7 +21,13 @@ import {
 import { 
     collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, query, where, writeBatch, getDocs, serverTimestamp, getDoc 
 } from 'firebase/firestore';
-import { DEFAULT_LANGUAGE } from '@/constants';
+import { 
+  DEFAULT_LANGUAGE,
+  TEAM_MEMBER_PERMISSIONS,
+  ADMIN_PERMISSIONS,
+  PROJECT_MANAGER_PERMISSIONS,
+  Permission,
+} from '@/constants';
 import { translations } from '@/locales';
 import type { LocaleKey, ProjectIdea } from '@/types';
 import type { User as FirebaseUser } from 'firebase/auth';

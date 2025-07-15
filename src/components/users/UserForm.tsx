@@ -5,8 +5,8 @@ import { useTranslations } from '@/hooks/useTranslations';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Checkbox from '@/components/ui/Checkbox';
-import { User, UserPermissions, Permission } from '@/types';
-import { TEAM_MEMBER_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, ADMIN_PERMISSIONS } from '@/constants';
+import { User, UserPermissions } from '@/types';
+import { ADMIN_PERMISSIONS, PROJECT_MANAGER_PERMISSIONS, TEAM_MEMBER_PERMISSIONS, Permission } from '@/constants';
 import { adminInviteUser } from '@/firebase';
 
 

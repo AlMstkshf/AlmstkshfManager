@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { AppProvider } from './contexts/AppContext';
 import { HashRouter } from 'react-router-dom';
+import './i18n';
 import './index.css';
 
 const rootElement = document.getElementById('root');

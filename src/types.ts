@@ -12,8 +12,16 @@ export interface User {
   passwordResetTokenExpiry?: number;
 }
 
+export enum Permission {
+  MANAGE_USERS = 'MANAGE_USERS',
+  MANAGE_PROJECTS = 'MANAGE_PROJECTS',
+  VIEW_REPORTS = 'VIEW_REPORTS',
+}
+
 export interface UserPermissions {
-  [key: string]: boolean;
+  [Permission.MANAGE_USERS]: boolean;
+  [Permission.MANAGE_PROJECTS]: boolean;
+  [Permission.VIEW_REPORTS]: boolean;
 }
 
 export enum Language {

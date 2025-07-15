@@ -1,5 +1,6 @@
 
-import { Permission, UserPermissions } from '@/types';
+import { UserPermissions } from '@/types';
+import { Permission } from '@/constants';
 import { TFunction } from 'i18next';
 
 export const generateId = (): string => {
