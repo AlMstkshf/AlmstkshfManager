@@ -125,7 +125,22 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'taskPriorityLow': 'Low',
     'notifications': 'Notifications',
     'clearAll': 'Clear All',
-    'noNewNotifications': 'No new notifications.'
+    'noNewNotifications': 'No new notifications.',
+    'appName': 'Almstkshf Manager',
+    'searchPlaceholder': 'Search...',
+    'searchToggleOpenAriaLabel': 'Open search bar',
+    'searchToggleCloseAriaLabel': 'Close search bar',
+    'userProfilePageTitle': 'User Profile',
+    'sidebarMyProfile': 'My Profile',
+    'logoutButton': 'Logout',
+    'guest': 'Guest',
+    'myTasksAndTodos': 'My Tasks & Todos',
+    'projectIdeas': 'Project Ideas',
+    'userManagement': 'User Management',
+    'guidelinesPageTitle': 'Guidelines',
+    'sidebarHelpAndTour': 'Help & Tour',
+    'expandSidebar': 'Expand Sidebar',
+    'collapseSidebar': 'Collapse Sidebar'
   },
   ar: {
     'loading': 'جاري التحميل...',
@@ -251,6 +266,21 @@ export const translations: Record<string, Record<LocaleKey, string>> = {
     'taskPriorityLow': 'منخفضة',
     'notifications': 'الإشعارات',
     'clearAll': 'مسح الكل',
-    'noNewNotifications': 'لا توجد إشعارات جديدة.'
+    'noNewNotifications': 'لا توجد إشعارات جديدة.',
+    'appName': 'المستكشف مانجر',
+    'searchPlaceholder': 'ابحث...',
+    'searchToggleOpenAriaLabel': 'افتح شريط البحث',
+    'searchToggleCloseAriaLabel': 'أغلق شريط البحث',
+    'userProfilePageTitle': 'ملف المستخدم',
+    'sidebarMyProfile': 'ملفي الشخصي',
+    'logoutButton': 'تسجيل الخروج',
+    'guest': 'زائر',
+    'myTasksAndTodos': 'مهامي ومهام Todo',
+    'projectIdeas': 'أفكار المشاريع',
+    'userManagement': 'إدارة المستخدمين',
+    'guidelinesPageTitle': 'الإرشادات',
+    'sidebarHelpAndTour': 'المساعدة والجولة',
+    'expandSidebar': 'توسيع الشريط الجانبي',
+    'collapseSidebar': 'طي الشريط الجانبي'
   }
 };

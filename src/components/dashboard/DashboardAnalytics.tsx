@@ -32,7 +32,12 @@ const DashboardAnalytics: React.FC<DashboardAnalyticsProps> = ({ projects, tasks
   
   const totalProjects = projects.length;
   const totalTasks = tasks.length;
-  const tasksInProgress = tasks.filter(task => task.status === TaskStatus.InProgress).length;
+  const tasksInProgress = tasks.filter(task => 
+    task.status === TaskStatus.InProgress || 
+    task.status === TaskStatus.Review || 
+    task.status === TaskStatus.Blocked ||
+    task.status === TaskStatus.Overdue
+  ).length;
   const tasksDone = tasks.filter(task => task.status === TaskStatus.Done).length;
   const totalUsersInOrg = users.length;
 

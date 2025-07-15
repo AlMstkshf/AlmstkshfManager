@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import Layout from './components/Layout';
 import DashboardPage from './pages/DashboardPage';
 import ProjectIdeasPage from './pages/ProjectIdeasPage';
@@ -15,13 +14,15 @@ import SetPasswordPage from './pages/SetPasswordPage';
 import RequestPasswordResetPage from './pages/RequestPasswordResetPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import { useAppContext } from './contexts/AppContext';
 
 const App: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { language } = useAppContext();
 
   useEffect(() => {
-    document.documentElement.dir = i18n.dir();
-  }, [i18n, i18n.language]);
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
 
   return (
     <Layout>
